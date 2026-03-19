@@ -1,0 +1,27 @@
+﻿@page
+@model NEXT.Pages.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div style="min-height: 80vh; display: flex; justify-content: center; align-items: center;">
+    <div style="width: 400px; padding: 30px; border-radius: 12px; background-color: #f4f4f4; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+        <h1 style="text-align: center; margin-bottom: 30px; color: #AE3751;">NERA</h1>
+
+        <form method="post">
+            <div style="margin-bottom: 20px;">
+                <label for="Username" style="display:block; margin-bottom: 8px;">Gebruikersnaam</label>
+                <input asp-for="Username" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;" />
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label for="Password" style="display:block; margin-bottom: 8px;">Wachtwoord</label>
+                <input asp-for="Password" type="password" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;" />
+            </div>
+
+            <button type="submit" style="width:100%; padding:12px; background-color:#AE3751; color:white; border:none; border-radius:8px;">
+                Inloggen
+            </button>
+        </form>
+    </div>
+</div>
