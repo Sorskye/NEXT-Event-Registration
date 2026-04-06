@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\somar\\Desktop\\CGI_NERA\\NEXT.csproj",
+      "projectUniqueName": "C:\\Users\\somar\\Desktop\\NEXT_CGI\\NEXT.csproj",
       "projectName": "NEXT",
-      "projectPath": "C:\\Users\\somar\\Desktop\\CGI_NERA\\NEXT.csproj",
+      "projectPath": "C:\\Users\\somar\\Desktop\\NEXT_CGI\\NEXT.csproj",
       "packagesPath": "C:\\Users\\somar\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\somar\\Desktop\\CGI_NERA\\obj\\",
+      "outputPath": "C:\\Users\\somar\\Desktop\\NEXT_CGI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
