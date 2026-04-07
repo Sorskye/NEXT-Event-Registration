@@ -1,24 +1,24 @@
-using Microsoft.AspNetCore.Mvc;
+using DAL.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using NERA.Models;
-using NEXT.Pages;
+
 
 namespace NERA.Pages
 {
     public class EventDetailsModel : PageModel
     {
+
+        private int currentUserId = 2;
         public Event SelectedEvent { get; set; }
+        public bool IsRegistered { get; set; }
 
-        public IActionResult OnGet(int id)
+        public void OnGet(int id)
         {
-            SelectedEvent = HomepageModel.AllEvents.FirstOrDefault(e => e.Id == id);
+            EventRepository_SQLServer repo = new EventRepository_SQLServer();
 
-            if (SelectedEvent == null)
-            {
-                return RedirectToPage("/Homepage");
-            }
+            SelectedEvent = repo.GetEventById(id);
 
-            return Page();
+            IsRegistered = repo.IsUserRegistered(currentUserId, id);
         }
     }
 }

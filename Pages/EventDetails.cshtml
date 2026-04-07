@@ -25,7 +25,7 @@
                     </p>
 
                     <div class="event-highlight-box">
-                        @if (Model.SelectedEvent.IsRegistered)
+                        @if (Model.IsRegistered)
                         {
                             <h2 class="event-highlight-title">Je bent aangemeld</h2>
                             <p class="event-highlight-text">
@@ -53,8 +53,8 @@
                     </div>
 
                     <div class="info-item">
-                        <div class="info-label">Datum</div>
-                        <div class="info-value">@Model.SelectedEvent.Date</div>
+                        <div class="info-label">Datum en </div>
+                        <div class="info-value">@Model.SelectedEvent.Date.ToString("dd-MM-yyyy HH:mm")</div>
                     </div>
 
                     <div class="info-item">
@@ -69,14 +69,14 @@
                 </div>
 
                 <div class="action-box">
-                    @if (Model.SelectedEvent.IsRegistered)
+                    @if (Model.IsRegistered)
                     {
                         <div class="action-title">Registratie beheren</div>
                         <p class="action-text">
                             Je staat momenteel geregistreerd voor dit evenement.
                         </p>
 
-                        <form method="post" asp-page="/Homepage" asp-page-handler="Unregister" onsubmit="return confirm('Wil je zeker afmelden?');">
+                        <form method="post" asp-page="/Homepage" asp-page-handler="Unregister">
                             <input type="hidden" name="id" value="@Model.SelectedEvent.Id" />
                             <button type="submit" class="btn btn-nera-secondary">Afmelden</button>
                         </form>
@@ -88,7 +88,7 @@
                             Schrijf je in om deel te nemen aan dit evenement.
                         </p>
 
-                        <form method="post" asp-page="/Homepage" asp-page-handler="Register" onsubmit="return confirm('Wil je zeker aanmelden?');">
+                        <form method="post" asp-page="/Homepage" asp-page-handler="Register">
                             <input type="hidden" name="id" value="@Model.SelectedEvent.Id" />
                             <button type="submit" class="btn btn-nera-primary">Meld aan</button>
                         </form>

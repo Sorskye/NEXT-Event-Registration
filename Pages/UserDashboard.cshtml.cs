@@ -5,9 +5,9 @@ using NERA.Models;
 
 namespace NEXT.Pages
 {
-    public class HomepageModel : PageModel
+    public class UserDashboardModel : PageModel
     {
-        private int currentUserId = 2;
+        private int currentUserId = 1;
         public bool IsAdmin { get; set; }
 
         public List<Event> RegisteredEvents { get; set; }
