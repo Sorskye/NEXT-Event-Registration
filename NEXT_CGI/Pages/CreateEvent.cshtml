@@ -1,0 +1,131 @@
+﻿@page
+@model NEXT.Pages.CreateEventModel
+@{
+    ViewData["Title"] = "Create Event";
+}
+
+<div class="create-event-page">
+    <img src="/images/corner.png" class="corner-logo" />
+
+    <div class="create-event-container">
+        <div class="create-event-card">
+            <div class="create-event-header">
+                <div class="event-badge">Admin Panel</div>
+                <h1 class="create-event-title">Nieuw evenement aanmaken</h1>
+                <p class="create-event-subtitle">
+                    Vul hieronder de gegevens van het evenement in.
+                </p>
+            </div>
+
+            <form method="post" enctype="multipart/form-data" class="create-event-form">
+                <div class="form-group">
+                    <label asp-for="Title" class="form-label">Titel</label>
+                    <input asp-for="Title" class="form-input" placeholder="Bijvoorbeeld: Summer Innovation Meetup" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Location" class="form-label">Locatie</label>
+                    <input asp-for="Location" class="form-input" placeholder="Bijvoorbeeld: Eindhoven" />
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="Date" class="form-label">Datum</label>
+                        <input asp-for="Date"
+                               type="datetime-local"
+                               class="form-input"
+                               min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"
+                               value="@Model.Date.ToString("yyyy-MM-ddTHH:mm")" />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="MaxParticipants" class="form-label">Max deelnemers</label>
+                        <input asp-for="MaxParticipants" class="form-input" placeholder="Bijvoorbeeld: 30" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Afbeelding uploaden</label>
+
+                    <input asp-for="ImageFile" type="file" id="ImageFile" accept=".jpg,.jpeg,.png,.webp" class="hidden-file-input" />
+
+                    <div class="upload-card">
+                        <div class="upload-preview-wrapper">
+                            <img id="imagePreview" src="/images/placeholder-image.png" alt="preview" class="upload-preview-image" />
+                        </div>
+
+                        <div class="upload-content">
+                            <div class="upload-title">Afbeelding evenement</div>
+                            <div class="upload-subtitle">
+                                Sleep een afbeelding hierheen of klik om te selecteren.
+                            </div>
+                            <div class="upload-hint">
+                                Max 5 MB. JPG, PNG of WEBP.
+                            </div>
+                        </div>
+
+                        <div class="upload-actions">
+                            <label for="ImageFile" class="upload-select-btn">Selecteer</label>
+                            <button type="button" id="removeImageBtn" class="upload-remove-btn">Verwijder</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Description" class="form-label">Beschrijving</label>
+                    <textarea asp-for="Description" class="form-textarea" rows="5" placeholder="Beschrijf hier het evenement..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <a asp-page="/Homepage" class="btn btn-nera-secondary create-back-btn">Annuleren</a>
+                    <button type="submit" class="btn btn-nera-primary create-save-btn">Evenement opslaan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        const imageInput = document.getElementById("ImageFile");
+        const imagePreview = document.getElementById("imagePreview");
+        const removeImageBtn = document.getElementById("removeImageBtn");
+        const defaultPreview = "/images/placeholder-image.png";
+
+        imageInput.addEventListener("change", function () {
+            const file = this.files[0];
+
+            if (!file) {
+                imagePreview.src = defaultPreview;
+                return;
+            }
+
+            const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+            if (!allowedTypes.includes(file.type)) {
+                alert("Alleen JPG, PNG of WEBP bestanden zijn toegestaan.");
+                imageInput.value = "";
+                imagePreview.src = defaultPreview;
+                return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                alert("De afbeelding mag maximaal 5 MB zijn.");
+                imageInput.value = "";
+                imagePreview.src = defaultPreview;
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                imagePreview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        removeImageBtn.addEventListener("click", function () {
+            imageInput.value = "";
+            imagePreview.src = defaultPreview;
+        });
+    </script>
+}

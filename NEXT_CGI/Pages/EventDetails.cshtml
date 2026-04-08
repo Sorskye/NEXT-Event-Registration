@@ -1,0 +1,100 @@
+﻿@page
+@model NERA.Pages.EventDetailsModel
+@{
+    ViewData["Title"] = "Event Details";
+}
+
+<div class="details-page">
+    <img src="/images/corner.png" class="corner-logo" />
+    <div class="details-container">
+        <a asp-page="/Homepage" class="back-link">← Terug naar evenementen</a>
+
+        <div class="details-grid">
+            <section class="details-main-card">
+                <img src="@Model.SelectedEvent.ImageUrl"
+                     alt="@Model.SelectedEvent.Title"
+                     class="details-image" />
+
+                <div class="details-main-body">
+                    <div class="event-badge">NERA Event</div>
+
+                    <h1 class="event-title">@Model.SelectedEvent.Title</h1>
+
+                    <p class="event-description">
+                        @Model.SelectedEvent.Description
+                    </p>
+
+                    <div class="event-highlight-box">
+                        @if (Model.IsRegistered)
+                        {
+                            <h2 class="event-highlight-title">Je bent aangemeld</h2>
+                            <p class="event-highlight-text">
+                                Je registratie is bevestigd. Fijn dat je erbij bent. Kun je toch niet komen, meld je dan op tijd af zodat anderen mogelijk kunnen deelnemen.
+                            </p>
+                        }
+                        else
+                        {
+                            <h2 class="event-highlight-title">Wil je deelnemen?</h2>
+                            <p class="event-highlight-text">
+                                Meld je aan voor dit evenement om je plek te reserveren.
+                            </p>
+                        }
+                    </div>
+                </div>
+            </section>
+
+            <aside class="details-side-card">
+                <h2 class="side-title">Evenement informatie</h2>
+
+                <div class="info-list">
+                    <div class="info-item">
+                        <div class="info-label">Locatie</div>
+                        <div class="info-value">@Model.SelectedEvent.Location</div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">Datum en </div>
+                        <div class="info-value">@Model.SelectedEvent.Date.ToString("dd-MM-yyyy HH:mm")</div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">Organizer</div>
+                        <div class="info-value">@Model.SelectedEvent.Organizer</div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">Deelnemers</div>
+                        <div class="info-value">@Model.SelectedEvent.CurrentParticipants / @Model.SelectedEvent.MaxParticipants</div>
+                    </div>
+                </div>
+
+                <div class="action-box">
+                    @if (Model.IsRegistered)
+                    {
+                        <div class="action-title">Registratie beheren</div>
+                        <p class="action-text">
+                            Je staat momenteel geregistreerd voor dit evenement.
+                        </p>
+
+                        <form method="post" asp-page="/Homepage" asp-page-handler="Unregister">
+                            <input type="hidden" name="id" value="@Model.SelectedEvent.Id" />
+                            <button type="submit" class="btn btn-nera-secondary">Afmelden</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="action-title">Direct aanmelden</div>
+                        <p class="action-text">
+                            Schrijf je in om deel te nemen aan dit evenement.
+                        </p>
+
+                        <form method="post" asp-page="/Homepage" asp-page-handler="Register">
+                            <input type="hidden" name="id" value="@Model.SelectedEvent.Id" />
+                            <button type="submit" class="btn btn-nera-primary">Meld aan</button>
+                        </form>
+                    }
+                </div>
+            </aside>
+        </div>
+    </div>
+</div>
