@@ -1,21 +1,20 @@
 ﻿@page
-@model NEXT.Pages.HomepageModel
+@model NEXT.Pages.UserDashboardModel
 @{
-    ViewData["Title"] = "Homepage";
+    ViewData["Title"] = "UserDashboard";
 }
+
 <div class="homepage-wrapper">
     <img src="/images/corner.png" class="corner-logo" />
     <div class="homepage-container">
 
 
-        <div class="d-flex justify-content-end align-items-center mb-4">
-            @if (Model.IsAdmin)
-            {
-                <div class="admin-action">
-                    <a asp-page="/CreateEvent" class="btn btn-nera-primary">Nieuw evenement aanmaken</a>
-                </div>
-            }
-        </div>
+        @if (Model.IsAdmin)
+        {
+            <a asp-page="/CreateEvent" class="btn btn-nera-primary">
+                Nieuw evenement aanmaken
+            </a>
+        }
 
         @if (Model.RegisteredEvents != null && Model.RegisteredEvents.Any())
         {
@@ -26,12 +25,13 @@
                     @foreach (var ev in Model.RegisteredEvents)
                     {
                         <div class="col-md-6 col-lg-4">
-                            <div class="card event-card position-relative">
+                            <div class="card event-card">
                                 <img src="@ev.ImageUrl" class="event-image" alt="@ev.Title" />
 
                                 <div class="event-card-body">
-                                    <h5 class="card-title">@ev.Title</h5>
-                                    <a asp-page="/EventDetails" asp-route-id="@ev.Id" class="stretched-link" aria-label="Bekijk @ev.Title"></a>
+                                    <a asp-page="/EventDetails" asp-route-id="@ev.Id" style="text-decoration:none; color:inherit;">
+                                        <h5 class="card-title">@ev.Title</h5>
+                                    </a>
 
                                     <div class="event-meta">
                                         <p><strong>Locatie:</strong> @ev.Location</p>
@@ -66,12 +66,13 @@
                     @foreach (var ev in Model.UpcomingEvents)
                     {
                         <div class="col-md-6 col-lg-4">
-                            <div class="card event-card position-relative">
+                            <div class="card event-card">
                                 <img src="@ev.ImageUrl" class="event-image" alt="@ev.Title" />
 
                                 <div class="event-card-body">
-                                    <h5 class="card-title">@ev.Title</h5>
-                                    <a asp-page="/EventDetails" asp-route-id="@ev.Id" class="stretched-link" aria-label="Bekijk @ev.Title"></a>
+                                    <a asp-page="/EventDetails" asp-route-id="@ev.Id" style="text-decoration:none; color:inherit;">
+                                        <h5 class="card-title">@ev.Title</h5>
+                                    </a>
 
                                     <div class="event-meta">
                                         <p><strong>Locatie:</strong> @ev.Location</p>
