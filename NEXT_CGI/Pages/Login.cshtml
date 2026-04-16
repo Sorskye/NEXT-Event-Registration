@@ -10,14 +10,19 @@
 
         <form method="post">
             <div style="margin-bottom: 20px;">
-                <label for="Username" style="display:block; margin-bottom: 8px;">Gebruikersnaam</label>
-                <input asp-for="Username" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;" />
+                <label for="Email" style="display:block; margin-bottom: 8px;">Email</label>
+                <input asp-for="Email" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;" />
             </div>
 
             <div style="margin-bottom: 20px;">
                 <label for="Password" style="display:block; margin-bottom: 8px;">Wachtwoord</label>
                 <input asp-for="Password" type="password" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;" />
             </div>
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <p style="color:#b42318; margin-bottom: 16px;">@Model.ErrorMessage</p>
+            }
 
             <button type="submit" style="width:100%; padding:12px; background-color:#AE3751; color:white; border:none; border-radius:8px;">
                 Inloggen

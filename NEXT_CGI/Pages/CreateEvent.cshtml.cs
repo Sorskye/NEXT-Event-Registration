@@ -70,7 +70,7 @@ namespace NEXT.Pages
                 Description = Description,
                 Date = Date,
                 Location = Location,
-                Organizer = "Admin",
+                Organizer = "Organizer",
                 ImageUrl = imagePath,
                 CurrentParticipants = 0,
                 MaxParticipants = MaxParticipants

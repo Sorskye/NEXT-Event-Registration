@@ -6,16 +6,12 @@
 <div class="homepage-wrapper">
     <img src="/images/corner.png" class="corner-logo" />
     <div class="homepage-container">
-
-
-        <div class="d-flex justify-content-end align-items-center mb-4">
-            @if (Model.IsAdmin)
-            {
-                <div class="admin-action">
-                    <a asp-page="/CreateEvent" class="btn btn-nera-primary">Nieuw evenement aanmaken</a>
+        @if (Model.IsAdmin)
+        {
+            <div class="homepage-admin-action">
+                <a asp-page="/CreateEvent" class="btn btn-nera-primary">Nieuw evenement aanmaken</a>
                 </div>
-            }
-        </div>
+        }
 
         @if (Model.RegisteredEvents != null && Model.RegisteredEvents.Any())
         {
