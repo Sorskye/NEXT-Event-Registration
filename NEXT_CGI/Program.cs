@@ -11,6 +11,7 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is missing.");
 
 builder.Services.AddScoped(_ => new EventRepository_SQLServer(connectionString));
+builder.Services.AddScoped(_ => new UserRepository_SQLServer(connectionString));
 
 var app = builder.Build();
 
