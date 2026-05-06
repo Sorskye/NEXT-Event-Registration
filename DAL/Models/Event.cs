@@ -1,4 +1,6 @@
-﻿namespace NERA.Models
+﻿using System;
+
+namespace NERA.Models
 {
     public class Event
     {

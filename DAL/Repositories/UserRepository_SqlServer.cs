@@ -1,4 +1,5 @@
-﻿using DAL.Models;
+﻿using System;
+using DAL.Models;
 using Microsoft.Data.SqlClient;
 
 namespace DAL.Repositories
