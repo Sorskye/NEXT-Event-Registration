@@ -8,6 +8,13 @@ namespace NEXT.Pages.Events
 {
     public class EventDetailsModel : PageModel
     {
+        private readonly EventRepository_SQLServer eventRepo;
+
+        public EventDetailsModel(EventRepository_SQLServer eventRepo)
+        {
+            this.eventRepo = eventRepo;
+        }
+
         public Event SelectedEvent { get; set; }
         public bool IsRegistered { get; set; }
 
@@ -20,11 +27,9 @@ namespace NEXT.Pages.Events
                 return RedirectToPage("/Auth/Login");
             }
 
-            EventRepository_SQLServer repo = new EventRepository_SQLServer();
+            SelectedEvent = eventRepo.GetEventById(id);
 
-            SelectedEvent = repo.GetEventById(id);
-
-            IsRegistered = repo.IsUserRegistered(currentUserId.Value, id);
+            IsRegistered = eventRepo.IsUserRegistered(currentUserId.Value, id);
 
             return Page();
         }

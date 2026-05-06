@@ -8,6 +8,15 @@ namespace NEXT.Pages.Dashboards
 {
     public class AdminDashboardModel : PageModel
     {
+        private readonly EventRepository_SQLServer eventRepo;
+        private readonly UserRepository_SQLServer userRepo;
+
+        public AdminDashboardModel(EventRepository_SQLServer eventRepo, UserRepository_SQLServer userRepo)
+        {
+            this.eventRepo = eventRepo;
+            this.userRepo = userRepo;
+        }
+
         public List<Event> AllEvents { get; set; } = new();
         public int TotalEvents { get; set; }
 
@@ -15,14 +24,10 @@ namespace NEXT.Pages.Dashboards
         {
             int currentUserId = 2; // tijdelijk admin
 
-            UserRepository_SQLServer userRepo = new UserRepository_SQLServer();
-
             if (!userRepo.IsUserAdmin(currentUserId))
             {
                 return RedirectToPage("/Dashboards/UserDashboard");
             }
-
-            EventRepository_SQLServer eventRepo = new EventRepository_SQLServer();
 
             AllEvents = eventRepo.GetAllEvents();
             TotalEvents = AllEvents.Count;

@@ -5,8 +5,12 @@ namespace DAL.Repositories
 {
     public class EventRepository_SQLServer
     {
+        private readonly string connectionString;
 
-        private readonly string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=NERA;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Application Name=\"SQL Server Management Studio\";Command Timeout=0";
+        public EventRepository_SQLServer(string connectionString)
+        {
+            this.connectionString = connectionString;
+        }
 
         public Event GetEventById(int id)
         {

@@ -8,10 +8,12 @@ namespace NEXT.Pages.Events
     public class CreateEventModel : PageModel
     {
         private readonly IWebHostEnvironment _environment;
+        private readonly EventRepository_SQLServer eventRepo;
 
-        public CreateEventModel(IWebHostEnvironment environment)
+        public CreateEventModel(IWebHostEnvironment environment, EventRepository_SQLServer eventRepo)
         {
             _environment = environment;
+            this.eventRepo = eventRepo;
         }
 
         [BindProperty]
@@ -62,9 +64,7 @@ namespace NEXT.Pages.Events
                 imagePath = "/images/events/" + uniqueFileName;
             }
 
-            EventRepository_SQLServer repo = new EventRepository_SQLServer();
-
-            repo.CreateEvent(new Event
+            eventRepo.CreateEvent(new Event
             {
                 Title = Title,
                 Description = Description,

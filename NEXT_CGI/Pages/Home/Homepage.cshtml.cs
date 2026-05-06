@@ -8,6 +8,15 @@ namespace NEXT.Pages.Home
 {
     public class HomepageModel : PageModel
     {
+        private readonly EventRepository_SQLServer eventRepo;
+        private readonly UserRepository_SQLServer userRepo;
+
+        public HomepageModel(EventRepository_SQLServer eventRepo, UserRepository_SQLServer userRepo)
+        {
+            this.eventRepo = eventRepo;
+            this.userRepo = userRepo;
+        }
+
         public bool IsAdmin { get; set; }
         public string CurrentUserName { get; set; }
         public List<Event> RegisteredEvents { get; set; }
@@ -23,11 +32,8 @@ namespace NEXT.Pages.Home
                 return RedirectToPage("/Auth/Login");
             }
 
-            EventRepository_SQLServer repo = new EventRepository_SQLServer();
-            UserRepository_SQLServer userRepo = new UserRepository_SQLServer();
-
-            RegisteredEvents = repo.GetRegisteredEventsByUser(currentUserId.Value);
-            UpcomingEvents = repo.GetUpcomingEventsByUser(currentUserId.Value);
+            RegisteredEvents = eventRepo.GetRegisteredEventsByUser(currentUserId.Value);
+            UpcomingEvents = eventRepo.GetUpcomingEventsByUser(currentUserId.Value);
 
             IsAdmin = userRepo.IsUserAdmin(currentUserId.Value);
             CurrentUserName = HttpContext.Session.GetString("UserName") ?? "Gebruiker";
@@ -44,8 +50,7 @@ namespace NEXT.Pages.Home
                 return RedirectToPage("/Auth/Login");
             }
 
-            EventRepository_SQLServer repo = new EventRepository_SQLServer();
-            repo.RegisterUserForEvent(currentUserId.Value, id);
+            eventRepo.RegisterUserForEvent(currentUserId.Value, id);
 
             return RedirectToPage();
         }
@@ -59,8 +64,7 @@ namespace NEXT.Pages.Home
                 return RedirectToPage("/Auth/Login");
             }
 
-            EventRepository_SQLServer repo = new EventRepository_SQLServer();
-            repo.UnregisterUserFromEvent(currentUserId.Value, id);
+            eventRepo.UnregisterUserFromEvent(currentUserId.Value, id);
 
             return RedirectToPage();
         }

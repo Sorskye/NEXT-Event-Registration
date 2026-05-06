@@ -6,6 +6,13 @@ namespace NEXT.Pages.Auth
 {
     public class LoginModel : PageModel
     {
+        private readonly UserRepository_SQLServer userRepo;
+
+        public LoginModel(UserRepository_SQLServer userRepo)
+        {
+            this.userRepo = userRepo;
+        }
+
         [BindProperty]
         public string? Email { get; set; }
 
@@ -26,7 +33,6 @@ namespace NEXT.Pages.Auth
                 return Page();
             }
 
-            UserRepository_SQLServer userRepo = new UserRepository_SQLServer();
             var user = userRepo.GetUserByEmailAndPassword(Email, Password);
 
             if (user == null)

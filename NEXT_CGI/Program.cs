@@ -1,9 +1,16 @@
+using DAL.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
+
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is missing.");
+
+builder.Services.AddScoped(_ => new EventRepository_SQLServer(connectionString));
 
 var app = builder.Build();
 
