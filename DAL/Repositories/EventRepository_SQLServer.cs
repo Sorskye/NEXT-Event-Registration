@@ -13,7 +13,7 @@ namespace DAL.Repositories
         {
             this.connectionString = connectionString;
         }
-
+        
         public Event GetEventById(int id)
         {
             using SqlConnection con = new SqlConnection(connectionString);
