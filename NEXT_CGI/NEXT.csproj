@@ -14,4 +14,10 @@
     <PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.7.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Pages\Dashboards\AdminDashboard.cshtml.cs">
+      <DependentUpon>AdminDashboard.cshtml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>
