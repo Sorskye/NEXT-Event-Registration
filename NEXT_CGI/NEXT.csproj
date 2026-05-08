@@ -18,6 +18,30 @@
     <Compile Update="Pages\Dashboards\AdminDashboard.cshtml.cs">
       <DependentUpon>AdminDashboard.cshtml</DependentUpon>
     </Compile>
+    <Compile Update="Pages\Dashboards\UserDashboard.cshtml.cs">
+      <DependentUpon>UserDashboard.cshtml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\Auth\Login.cshtml.cs">
+      <DependentUpon>Login.cshtml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\Events\CreateEvent.cshtml.cs">
+      <DependentUpon>CreateEvent.cshtml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\Events\EventDetails.cshtml.cs">
+      <DependentUpon>EventDetails.cshtml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\Home\Error.cshtml.cs">
+      <DependentUpon>Error.cshtml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\Home\Homepage.cshtml.cs">
+      <DependentUpon>Homepage.cshtml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\Home\Index.cshtml.cs">
+      <DependentUpon>Index.cshtml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\Home\Privacy.cshtml.cs">
+      <DependentUpon>Privacy.cshtml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

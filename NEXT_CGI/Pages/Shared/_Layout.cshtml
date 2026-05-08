@@ -32,7 +32,7 @@
                     </ul>
                     @if (!string.IsNullOrEmpty(Context.Session.GetString("UserName")))
                     {
-                        <form method="post" asp-page="/Homepage" asp-page-handler="Logout" class="navbar-logout-form">
+                        <form method="post" asp-page="/Home/Homepage" asp-page-handler="Logout" class="navbar-logout-form">
                             <button type="submit" class="navbar-logout-link">Uitloggen</button>
                         </form>
                     }

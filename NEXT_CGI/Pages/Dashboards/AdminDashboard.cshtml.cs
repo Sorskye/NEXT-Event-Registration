@@ -8,6 +8,15 @@ namespace NEXT.Pages.Dashboards
 {
     public class AdminDashboardModel : PageModel
     {
+        private readonly EventRepository_SQLServer eventRepo;
+        private readonly UserRepository_SQLServer userRepo;
+        
+        //const
+        public AdminDashboardModel(EventRepository_SQLServer eventRepo ,  UserRepository_SQLServer userRepo)
+        {
+            this.eventRepo = eventRepo;
+            this.userRepo = userRepo;
+        }
         
         private readonly string connectionString;
         public List<Event> AllEvents { get; set; } = new();
@@ -20,11 +29,6 @@ namespace NEXT.Pages.Dashboards
         public List<Event> RegisteredEvents { get; set; }
         public List<Event> UpcomingEvents { get; set; }
         
-        //const
-        public AdminDashboardModel(string connectionString)
-        {
-            this.connectionString = connectionString;
-        }
 
         public IActionResult OnGet()
         {
@@ -38,9 +42,6 @@ namespace NEXT.Pages.Dashboards
             int? currentUserId = HttpContext.Session.GetInt32("UserId");
             UserName = HttpContext.Session.GetString("UserName");
 
-            EventRepository_SQLServer eventRepo = new EventRepository_SQLServer(this.connectionString);
-            UserRepository_SQLServer userRepo = new UserRepository_SQLServer(this.connectionString);
-
             RegisteredEvents = eventRepo.GetRegisteredEventsByUser(currentUserId.Value);
             UpcomingEvents = eventRepo.GetUpcomingEventsByUser(currentUserId.Value);
 
@@ -53,16 +54,15 @@ namespace NEXT.Pages.Dashboards
 
         public IActionResult OnPostRegister(int id)
         {
-            EventRepository_SQLServer repo = new EventRepository_SQLServer(this.connectionString);
-            repo.RegisterUserForEvent(currentUserId, id);
+            eventRepo.RegisterUserForEvent(currentUserId, id);
 
             return RedirectToPage();
         }
 
         public IActionResult OnPostUnregister(int id)
         {
-            EventRepository_SQLServer repo = new EventRepository_SQLServer(this.connectionString);
-            repo.UnregisterUserFromEvent(currentUserId, id);
+            
+            eventRepo.UnregisterUserFromEvent(currentUserId, id);
 
             return RedirectToPage();
         }
