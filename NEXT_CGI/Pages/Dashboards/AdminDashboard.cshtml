@@ -4,27 +4,28 @@
     ViewData["Title"] = "AdminDashboard";
 }
 
-<h1>Hello @Model.UserName</h1>
+<br></br>
+<h2>Hallo, @Model.UserName</h2>
+<br></br>
 
 <div class="homepage-wrapper">
     <img src="/images/corner.png" class="corner-logo" />
     <div class="homepage-container">
 
-
-        @if (Model.IsAdmin)
-        {
-            <a asp-page="/CreateEvent" class="btn btn-nera-primary">
-                Nieuw evenement aanmaken
-            </a>
-        }
-
-        @if (Model.RegisteredEvents != null && Model.RegisteredEvents.Any())
+        
+        
+       
+        <section class="section-block">
+            <h2 class="section-title">Jou evenementen:</h2>
+        </section>
+        
+        @if (Model.UserMadeEvents != null && Model.UserMadeEvents.Any())
         {
             <section class="section-block">
-                <h2 class="section-title">Hier heb je je aangemeld voor</h2>
+               
 
                 <div class="row g-4">
-                    @foreach (var ev in Model.RegisteredEvents)
+                    @foreach (var ev in Model.UserMadeEvents)
                     {
                         <div class="col-md-6 col-lg-4">
                             <div class="card event-card">
@@ -54,47 +55,17 @@
                 </div>
             </section>
         }
+        else
+        {
+            <p>Je hebt nog geen evenementen aangemaakt.</p>
+        }
 
-        <section class="section-block">
-            <h2 class="section-title">Komende evenementen</h2>
-
-            @if (Model.UpcomingEvents == null || !Model.UpcomingEvents.Any())
-            {
-                <p class="empty-text">Er zijn momenteel geen komende evenementen beschikbaar.</p>
-            }
-            else
-            {
-                <div class="row g-4">
-                    @foreach (var ev in Model.UpcomingEvents)
-                    {
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card event-card">
-                                <img src="@ev.ImageUrl" class="event-image" alt="@ev.Title" />
-
-                                <div class="event-card-body">
-                                    <a asp-page="/EventDetails" asp-route-id="@ev.Id" style="text-decoration:none; color:inherit;">
-                                        <h5 class="card-title">@ev.Title</h5>
-                                    </a>
-
-                                    <div class="event-meta">
-                                        <p><strong>Locatie:</strong> @ev.Location</p>
-                                        <p><strong>Datum:</strong> @ev.Date.ToString("dd-MM-yyyy HH:mm")</p>
-                                        <p><strong>Organizer:</strong> @ev.Organizer</p>
-                                    </div>
-
-                                    <div class="event-actions">
-                                        <form method="post" asp-page-handler="Register">
-                                            <input type="hidden" name="id" value="@ev.Id" />
-                                            <button type="submit" class="btn btn-nera-primary">Meld aan</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
-            }
-        </section>
+        @if (Model.IsAdmin)
+        {
+            <a asp-page="/Events/CreateEvent" class="btn btn-nera-primary">
+                Nieuw evenement aanmaken
+            </a>
+        }
 
     </div>
 </div>

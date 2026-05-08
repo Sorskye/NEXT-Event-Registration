@@ -117,6 +117,44 @@ namespace DAL.Repositories
 
             return events;
         }
+        public List<Event> GetEventsByUser(int userId)
+        {
+            List<Event> events = new List<Event>();
+
+            using SqlConnection con = new SqlConnection(connectionString);
+            con.Open();
+
+            string sqlQuery = @"
+            SELECT *
+            FROM Event
+            
+            WHERE Organizer = @UserId";
+
+            using SqlCommand cmd = new SqlCommand(sqlQuery, con);
+            cmd.Parameters.AddWithValue("@UserId", userId);
+
+            using SqlDataReader dr = cmd.ExecuteReader();
+
+            while (dr.Read())
+            {
+                Event ev = new Event
+                {
+                    Id = Convert.ToInt32(dr["Id"]),
+                    Title = dr["Title"].ToString(),
+                    Description = dr["Description"].ToString(),
+                    Date = Convert.ToDateTime(dr["Date"]),
+                    Location = dr["Location"].ToString(),
+                    Organizer = dr["Organizer"].ToString(),
+                    ImageUrl = dr["ImageUrl"].ToString(),
+                    CurrentParticipants = Convert.ToInt32(dr["CurrentParticipants"]),
+                    MaxParticipants = Convert.ToInt32(dr["MaxParticipants"])
+                };
+
+                events.Add(ev);
+            }
+
+            return events;
+        }
         public List<Event> GetUpcomingEventsByUser(int userId)
         {
             List<Event> events = new List<Event>();

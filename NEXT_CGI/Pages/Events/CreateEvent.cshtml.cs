@@ -63,14 +63,19 @@ namespace NEXT.Pages.Events
 
                 imagePath = "/images/events/" + uniqueFileName;
             }
-
+            
+            int? currentUserId = HttpContext.Session.GetInt32("UserId");
             eventRepo.CreateEvent(new Event
             {
                 Title = Title,
                 Description = Description,
                 Date = Date,
                 Location = Location,
-                Organizer = "Organizer",
+                
+                // Change organizer type to 'int' in database
+                // then use currentUserId instead of "temp"
+                Organizer = "temp",
+                
                 ImageUrl = imagePath,
                 CurrentParticipants = 0,
                 MaxParticipants = MaxParticipants

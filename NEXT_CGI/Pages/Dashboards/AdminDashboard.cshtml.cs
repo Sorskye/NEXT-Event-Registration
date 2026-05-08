@@ -19,34 +19,34 @@ namespace NEXT.Pages.Dashboards
         }
         
         private readonly string connectionString;
-        public List<Event> AllEvents { get; set; } = new();
         public int TotalEvents { get; set; }
         public string UserName { get; set; }
 
         private int currentUserId = 1;
         public bool IsAdmin { get; set; }
 
-        public List<Event> RegisteredEvents { get; set; }
-        public List<Event> UpcomingEvents { get; set; }
+        public List<Event> UserMadeEvents { get; set; }
+    
         
 
         public IActionResult OnGet()
         {
-
+            
             var role = HttpContext.Session.GetString("UserRole");
             if (role != "Admin")
             {
-                return RedirectToPage("/UserDashboard");
+                return RedirectToPage("/Home/Homepage");
             }
+
+            IsAdmin = true;
 
             int? currentUserId = HttpContext.Session.GetInt32("UserId");
             UserName = HttpContext.Session.GetString("UserName");
 
-            RegisteredEvents = eventRepo.GetRegisteredEventsByUser(currentUserId.Value);
-            UpcomingEvents = eventRepo.GetUpcomingEventsByUser(currentUserId.Value);
-
-            AllEvents = eventRepo.GetAllEvents();
-            TotalEvents = AllEvents.Count;
+            UserMadeEvents = eventRepo.GetRegisteredEventsByUser(currentUserId.Value);
+            
+          
+            TotalEvents = UserMadeEvents.Count;
 
             return Page();
         }
