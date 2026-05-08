@@ -6,7 +6,7 @@ namespace DAL.Models
     public class EventRepository_SQLServer
     {
 
-        private readonly string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=NERA;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Application Name=\"SQL Server Management Studio\";Command Timeout=0";
+        private readonly string connectionString = "Data Source=mssqlstud.fhict.local;Persist Security Info=True;User ID=dbi563611;Password=FontysHosting123456@;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Application Name=\"SQL Server Management Studio\";Command Timeout=0";
 
         public Event GetEventById(int id)
         {
@@ -31,7 +31,9 @@ namespace DAL.Models
                     Location = dr["Location"].ToString(),
                     Organizer = dr["Organizer"].ToString(),
                     ImageUrl = dr["ImageUrl"].ToString(),
-                    MaxParticipants = Convert.ToInt32(dr["MaxParticipants"])
+                    MaxParticipants = Convert.ToInt32(dr["MaxParticipants"]),
+                    Costs = Convert.ToDecimal(dr["Costs"])
+
                 };
 
                 dr.Close();

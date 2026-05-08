@@ -11,3 +11,16 @@ C:\Users\somar\Desktop\CGI\DAL\obj\Debug\net10.0\refint\DAL.dll
 C:\Users\somar\Desktop\CGI\DAL\obj\Debug\net10.0\DAL.pdb
 C:\Users\somar\Desktop\CGI\DAL\obj\Debug\net10.0\ref\DAL.dll
 C:\Users\somar\Desktop\CGI\DAL\obj\Debug\net10.0\DAL.sourcelink.json
+C:\Users\danny\source\repos\NEXT-Event-Registration\DAL\bin\Debug\net10.0\DAL.deps.json
+C:\Users\danny\source\repos\NEXT-Event-Registration\DAL\bin\Debug\net10.0\DAL.dll
+C:\Users\danny\source\repos\NEXT-Event-Registration\DAL\bin\Debug\net10.0\DAL.pdb
+C:\Users\danny\source\repos\NEXT-Event-Registration\DAL\obj\Debug\net10.0\DAL.csproj.AssemblyReference.cache
+C:\Users\danny\source\repos\NEXT-Event-Registration\DAL\obj\Debug\net10.0\DAL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\danny\source\repos\NEXT-Event-Registration\DAL\obj\Debug\net10.0\DAL.AssemblyInfoInputs.cache
+C:\Users\danny\source\repos\NEXT-Event-Registration\DAL\obj\Debug\net10.0\DAL.AssemblyInfo.cs
+C:\Users\danny\source\repos\NEXT-Event-Registration\DAL\obj\Debug\net10.0\DAL.csproj.CoreCompileInputs.cache
+C:\Users\danny\source\repos\NEXT-Event-Registration\DAL\obj\Debug\net10.0\DAL.sourcelink.json
+C:\Users\danny\source\repos\NEXT-Event-Registration\DAL\obj\Debug\net10.0\DAL.dll
+C:\Users\danny\source\repos\NEXT-Event-Registration\DAL\obj\Debug\net10.0\refint\DAL.dll
+C:\Users\danny\source\repos\NEXT-Event-Registration\DAL\obj\Debug\net10.0\DAL.pdb
+C:\Users\danny\source\repos\NEXT-Event-Registration\DAL\obj\Debug\net10.0\ref\DAL.dll

@@ -11,5 +11,6 @@
         public string ImageUrl { get; set; }
         public int CurrentParticipants { get; set; }
         public int MaxParticipants { get; set; }
+        public decimal Costs { get; set; }
     }
 }
