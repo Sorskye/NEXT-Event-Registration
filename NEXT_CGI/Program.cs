@@ -1,4 +1,5 @@
-using DAL.Repositories;
+using DAL.Repositories.Interfaces;
+using DAL.Repositories.SqlServer;
 using Auth0.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,8 +21,8 @@ builder.Services.AddAuth0WebAppAuthentication(options =>
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is missing.");
 
-builder.Services.AddScoped(_ => new EventRepository_SQLServer(connectionString));
-builder.Services.AddScoped(_ => new UserRepository_SQLServer(connectionString));
+builder.Services.AddScoped<IEventRepository>(_ => new SQLServerEventRepository(connectionString));
+builder.Services.AddScoped<IUserRepository>(_ => new SqlServerUserRepository(connectionString));
 
 var app = builder.Build();
 

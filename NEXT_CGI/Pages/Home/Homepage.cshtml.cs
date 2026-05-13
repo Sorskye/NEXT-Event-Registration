@@ -1,5 +1,5 @@
-﻿using DAL.Models;
-using DAL.Repositories;
+using DAL.Models;
+using DAL.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using NERA.Models;
@@ -8,20 +8,19 @@ namespace NEXT.Pages.Home
 {
     public class HomepageModel : PageModel
     {
-        private readonly EventRepository_SQLServer eventRepo;
-        private readonly UserRepository_SQLServer userRepo;
+        private readonly IEventRepository _eventRepository;
+        private readonly IUserRepository _userRepository;
 
-        public HomepageModel(EventRepository_SQLServer eventRepo, UserRepository_SQLServer userRepo)
+        public HomepageModel(IEventRepository eventRepository, IUserRepository userRepository)
         {
-            this.eventRepo = eventRepo;
-            this.userRepo = userRepo;
+            this._eventRepository = eventRepository;
+            this._userRepository = userRepository;
         }
 
         public bool IsAdmin { get; set; }
         public string CurrentUserName { get; set; }
         public List<Event> RegisteredEvents { get; set; }
         public List<Event> UpcomingEvents { get; set; }
-        
 
         public IActionResult OnGet()
         {
@@ -32,10 +31,10 @@ namespace NEXT.Pages.Home
                 return RedirectToPage("/Auth/Login");
             }
 
-            RegisteredEvents = eventRepo.GetRegisteredEventsByUser(currentUserId.Value);
-            UpcomingEvents = eventRepo.GetUpcomingEventsByUser(currentUserId.Value);
+            RegisteredEvents = _eventRepository.GetRegisteredEventsByUser(currentUserId.Value);
+            UpcomingEvents = _eventRepository.GetUpcomingEventsByUser(currentUserId.Value);
 
-            IsAdmin = userRepo.IsUserAdmin(currentUserId.Value);
+            IsAdmin = _userRepository.IsUserAdmin(currentUserId.Value);
             CurrentUserName = HttpContext.Session.GetString("UserName") ?? "Gebruiker";
 
             return Page();
@@ -50,7 +49,7 @@ namespace NEXT.Pages.Home
                 return RedirectToPage("/Auth/Login");
             }
 
-            eventRepo.RegisterUserForEvent(currentUserId.Value, id);
+            _eventRepository.RegisterUserForEvent(currentUserId.Value, id);
 
             return RedirectToPage();
         }
@@ -64,7 +63,7 @@ namespace NEXT.Pages.Home
                 return RedirectToPage("/Auth/Login");
             }
 
-            eventRepo.UnregisterUserFromEvent(currentUserId.Value, id);
+            _eventRepository.UnregisterUserFromEvent(currentUserId.Value, id);
 
             return RedirectToPage();
         }
@@ -76,4 +75,3 @@ namespace NEXT.Pages.Home
         }
     }
 }
-

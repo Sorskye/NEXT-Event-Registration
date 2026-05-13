@@ -1,4 +1,4 @@
-﻿using DAL.Repositories;
+using DAL.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -6,11 +6,11 @@ namespace NEXT.Pages.Auth
 {
     public class LoginModel : PageModel
     {
-        private readonly UserRepository_SQLServer userRepo;
+        private readonly IUserRepository _userRepository;
 
-        public LoginModel(UserRepository_SQLServer userRepo)
+        public LoginModel(IUserRepository userRepository)
         {
-            this.userRepo = userRepo;
+            this._userRepository = userRepository;
         }
 
         [BindProperty]
@@ -33,7 +33,7 @@ namespace NEXT.Pages.Auth
                 return Page();
             }
 
-            var user = userRepo.GetUserByEmailAndPassword(Email, Password);
+            var user = _userRepository.GetUserByEmailAndPassword(Email, Password);
 
             if (user == null)
             {
@@ -49,4 +49,3 @@ namespace NEXT.Pages.Auth
         }
     }
 }
-

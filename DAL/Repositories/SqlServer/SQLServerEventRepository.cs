@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using DAL.Repositories.Interfaces;
 using Microsoft.Data.SqlClient;
 using NERA.Models;
 
-namespace DAL.Repositories
+namespace DAL.Repositories.SqlServer
 {
-    public class EventRepository_SQLServer
+    public class SQLServerEventRepository : IEventRepository
     {
         private readonly string connectionString;
 
-        public EventRepository_SQLServer(string connectionString)
+        public SQLServerEventRepository(string connectionString)
         {
             this.connectionString = connectionString;
         }

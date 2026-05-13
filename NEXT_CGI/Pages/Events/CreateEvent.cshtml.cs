@@ -1,4 +1,4 @@
-﻿using DAL.Repositories;
+using DAL.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using NERA.Models;
@@ -8,12 +8,12 @@ namespace NEXT.Pages.Events
     public class CreateEventModel : PageModel
     {
         private readonly IWebHostEnvironment _environment;
-        private readonly EventRepository_SQLServer eventRepo;
+        private readonly IEventRepository _eventRepository;
 
-        public CreateEventModel(IWebHostEnvironment environment, EventRepository_SQLServer eventRepo)
+        public CreateEventModel(IWebHostEnvironment environment, IEventRepository eventRepository)
         {
             _environment = environment;
-            this.eventRepo = eventRepo;
+            this._eventRepository = eventRepository;
         }
 
         [BindProperty]
@@ -63,19 +63,19 @@ namespace NEXT.Pages.Events
 
                 imagePath = "/images/events/" + uniqueFileName;
             }
-            
+
             int? currentUserId = HttpContext.Session.GetInt32("UserId");
-            eventRepo.CreateEvent(new Event
+            _eventRepository.CreateEvent(new Event
             {
                 Title = Title,
                 Description = Description,
                 Date = Date,
                 Location = Location,
-                
+
                 // Change organizer type to 'int' in database
                 // then use currentUserId instead of "temp"
                 Organizer = "temp",
-                
+
                 ImageUrl = imagePath,
                 CurrentParticipants = 0,
                 MaxParticipants = MaxParticipants

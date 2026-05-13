@@ -1,14 +1,15 @@
 ﻿using System;
 using DAL.Models;
+using DAL.Repositories.Interfaces;
 using Microsoft.Data.SqlClient;
 
-namespace DAL.Repositories
+namespace DAL.Repositories.SqlServer
 {
-    public class UserRepository_SQLServer
+    public class SqlServerUserRepository : IUserRepository
     {
         private readonly string connectionString;
 
-        public UserRepository_SQLServer(string connectionString)
+        public SqlServerUserRepository(string connectionString)
         {
             this.connectionString = connectionString;
         }

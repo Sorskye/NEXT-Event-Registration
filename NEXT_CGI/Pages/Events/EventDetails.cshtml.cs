@@ -1,18 +1,17 @@
-﻿using DAL.Repositories;
+using DAL.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using NERA.Models;
-
 
 namespace NEXT.Pages.Events
 {
     public class EventDetailsModel : PageModel
     {
-        private readonly EventRepository_SQLServer eventRepo;
+        private readonly IEventRepository _eventRepository;
 
-        public EventDetailsModel(EventRepository_SQLServer eventRepo)
+        public EventDetailsModel(IEventRepository eventRepository)
         {
-            this.eventRepo = eventRepo;
+            this._eventRepository = eventRepository;
         }
 
         public Event SelectedEvent { get; set; }
@@ -27,12 +26,11 @@ namespace NEXT.Pages.Events
                 return RedirectToPage("/Auth/Login");
             }
 
-            SelectedEvent = eventRepo.GetEventById(id);
+            SelectedEvent = _eventRepository.GetEventById(id);
 
-            IsRegistered = eventRepo.IsUserRegistered(currentUserId.Value, id);
+            IsRegistered = _eventRepository.IsUserRegistered(currentUserId.Value, id);
 
             return Page();
         }
     }
 }
-

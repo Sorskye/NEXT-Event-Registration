@@ -1,5 +1,5 @@
-﻿using DAL.Models;
-using DAL.Repositories;
+using DAL.Models;
+using DAL.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using NERA.Models;
@@ -8,14 +8,14 @@ namespace NEXT.Pages.Dashboards
 {
     public class UserDashboardModel : PageModel
     {
-        private readonly EventRepository_SQLServer eventRepo;
-        private readonly UserRepository_SQLServer userRepo;
+        private readonly IEventRepository _eventRepository;
+        private readonly IUserRepository _userRepository;
         private int currentUserId = 1;
 
-        public UserDashboardModel(EventRepository_SQLServer eventRepo, UserRepository_SQLServer userRepo)
+        public UserDashboardModel(IEventRepository eventRepository, IUserRepository userRepository)
         {
-            this.eventRepo = eventRepo;
-            this.userRepo = userRepo;
+            this._eventRepository = eventRepository;
+            this._userRepository = userRepository;
         }
 
         public bool IsAdmin { get; set; }
@@ -25,24 +25,22 @@ namespace NEXT.Pages.Dashboards
 
         public void OnGet()
         {
+            RegisteredEvents = _eventRepository.GetRegisteredEventsByUser(currentUserId);
+            UpcomingEvents = _eventRepository.GetUpcomingEventsByUser(currentUserId);
 
-            RegisteredEvents = eventRepo.GetRegisteredEventsByUser(currentUserId);
-            UpcomingEvents = eventRepo.GetUpcomingEventsByUser(currentUserId);
-            
-
-            IsAdmin = userRepo.IsUserAdmin(currentUserId);
+            IsAdmin = _userRepository.IsUserAdmin(currentUserId);
         }
 
         public IActionResult OnPostRegister(int id)
         {
-            eventRepo.RegisterUserForEvent(currentUserId, id);
+            _eventRepository.RegisterUserForEvent(currentUserId, id);
 
             return RedirectToPage();
         }
 
         public IActionResult OnPostUnregister(int id)
         {
-            eventRepo.UnregisterUserFromEvent(currentUserId, id);
+            _eventRepository.UnregisterUserFromEvent(currentUserId, id);
 
             return RedirectToPage();
         }
