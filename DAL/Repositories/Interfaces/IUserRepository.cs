@@ -6,5 +6,4 @@ public interface IUserRepository
 {
     User GetUserByEmailAndPassword(string email, string password);
     bool IsUserAdmin(int userId);
-    User GetUserById(int userId);
 }
