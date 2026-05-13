@@ -26,6 +26,8 @@ namespace NEXT.Pages.Dashboards
         public bool IsAdmin { get; set; }
 
         public List<Event> UserMadeEvents { get; set; }
+        public List<Event> RegisteredEvents { get; set; }
+        public List<Event> UpcomingEvents { get; set; }
 
         public IActionResult OnGet()
         {
@@ -41,6 +43,10 @@ namespace NEXT.Pages.Dashboards
             UserName = HttpContext.Session.GetString("UserName");
 
             UserMadeEvents = _eventRepository.GetRegisteredEventsByUser(currentUserId.Value);
+            RegisteredEvents = _eventRepository.GetRegisteredEventsByUser(currentUserId.Value);
+            UpcomingEvents = _eventRepository.GetUpcomingEventsByUser(currentUserId.Value);
+
+            IsAdmin = _userRepository.IsUserAdmin(currentUserId.Value);
 
             TotalEvents = UserMadeEvents.Count;
 
