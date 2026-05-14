@@ -2,7 +2,7 @@ using NERA.Models;
 
 namespace DAL.Repositories.Interfaces;
 
-public interface IEventRegistrationRepository
+public interface IEventRegistrationRepository // Verantwoordelijk voor [REGISTRATIE] aanmelden, afmelden, checken of iemand is aangemeld, en lijsten ophalen rond registraties.
 {
     void RegisterUserForEvent(int userId, int eventId);
     void UnregisterUserFromEvent(int userId, int eventId);

@@ -11,6 +11,7 @@ namespace NEXT.Pages.Dashboards
         private readonly IEventRepository _eventRepository;
         private readonly IEventRegistrationRepository _eventRegistrationRepository;
         private readonly IUserRepository _userRepository;
+        
         public int TotalEvents { get; set; }
         public string UserName { get; set; }
         public bool IsAdmin { get; set; }
@@ -18,7 +19,7 @@ namespace NEXT.Pages.Dashboards
         public List<Event> RegisteredEvents { get; set; }
         public List<Event> UpcomingEvents { get; set; }
 
-        //const
+        
         public AdminDashboardModel(
             IEventRepository eventRepository,
             IEventRegistrationRepository eventRegistrationRepository,
