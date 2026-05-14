@@ -9,30 +9,29 @@
 <br></br>
 
 <div class="homepage-wrapper">
-    <img src="/images/corner.png" class="corner-logo" />
+    <img src="/images/corner.png" class="corner-logo"/>
     <div class="homepage-container">
 
         
-        
-       
         <section class="section-block">
             <h2 class="section-title">Jou evenementen:</h2>
         </section>
-        
+
         @if (Model.UserMadeEvents != null && Model.UserMadeEvents.Any())
         {
             <section class="section-block">
-               
+
 
                 <div class="row g-4">
                     @foreach (var ev in Model.UserMadeEvents)
                     {
                         <div class="col-md-6 col-lg-4">
                             <div class="card event-card">
-                                <img src="@ev.ImageUrl" class="event-image" alt="@ev.Title" />
+                                <img src="@ev.ImageUrl" class="event-image" alt="@ev.Title"/>
 
                                 <div class="event-card-body">
-                                    <a asp-page="/EventDetails" asp-route-id="@ev.Id" style="text-decoration:none; color:inherit;">
+                                    <a asp-page="/EventDetails" asp-route-id="@ev.Id"
+                                       style="text-decoration:none; color:inherit;">
                                         <h5 class="card-title">@ev.Title</h5>
                                     </a>
 
@@ -44,7 +43,7 @@
 
                                     <div class="event-actions">
                                         <form method="post" asp-page-handler="Unregister">
-                                            <input type="hidden" name="id" value="@ev.Id" />
+                                            <input type="hidden" name="id" value="@ev.Id"/>
                                             <button type="submit" class="btn btn-nera-secondary">Afmelden</button>
                                         </form>
                                     </div>

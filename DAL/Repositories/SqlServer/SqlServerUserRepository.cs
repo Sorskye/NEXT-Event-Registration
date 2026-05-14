@@ -14,9 +14,9 @@ namespace DAL.Repositories.SqlServer
             this.connectionString = connectionString;
         }
 
-        public User GetUserByEmailAndPassword(string email, string password)
+        public User GetUserByEmail(string email)
         {
-            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            if (string.IsNullOrWhiteSpace(email))
             {
                 return null;
             }
@@ -25,26 +25,17 @@ namespace DAL.Repositories.SqlServer
             {
                 conn.Open();
 
-                string query = "SELECT * FROM [User] WHERE Email = @Email AND PasswordHash = @Password";
+                string query = "SELECT ID, Auth0_id, Name, Email, Role, Created_at FROM Users WHERE Email = @Email";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Email", email.Trim());
-                    cmd.Parameters.AddWithValue("@Password", password);
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
-                            return new User
-                            {
-                                Id = (int)reader["Id"],
-                                Name = reader["Name"].ToString(),
-                                Email = reader["Email"].ToString(),
-                                PasswordHash = reader["PasswordHash"].ToString(),
-                                Role = (bool)reader["Role"],
-                                Created_at = (DateTime)reader["Created_at"]
-                            };
+                            return ReadUser(reader);
                         }
                     }
                 }
@@ -59,7 +50,7 @@ namespace DAL.Repositories.SqlServer
             {
                 conn.Open();
 
-                string query = "SELECT Role FROM [User] WHERE Id = @Id";
+                string query = "SELECT Role FROM Users WHERE ID = @Id";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
@@ -69,7 +60,7 @@ namespace DAL.Repositories.SqlServer
 
                     if (result != null)
                     {
-                        return (bool)result;
+                        return string.Equals(result.ToString(), "admin", StringComparison.OrdinalIgnoreCase);
                     }
                 }
             }
@@ -83,7 +74,7 @@ namespace DAL.Repositories.SqlServer
             {
                 conn.Open();
 
-                string query = "SELECT * FROM [User] WHERE Id = @Id";
+                string query = "SELECT ID, Auth0_id, Name, Email, Role, Created_at FROM Users WHERE ID = @Id";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
@@ -93,21 +84,26 @@ namespace DAL.Repositories.SqlServer
                     {
                         if (reader.Read())
                         {
-                            return new User
-                            {
-                                Id = (int)reader["Id"],
-                                Name = reader["Name"].ToString(),
-                                Email = reader["Email"].ToString(),
-                                PasswordHash = reader["PasswordHash"].ToString(),
-                                Role = (bool)reader["Role"],
-                                Created_at = (DateTime)reader["Created_at"]
-                            };
+                            return ReadUser(reader);
                         }
                     }
                 }
             }
 
             return null;
+        }
+
+        private static User ReadUser(SqlDataReader reader)
+        {
+            return new User
+            {
+                Id = Convert.ToInt32(reader["ID"]),
+                Auth0Id = reader["Auth0_id"] == DBNull.Value ? null : reader["Auth0_id"].ToString(),
+                Name = reader["Name"] == DBNull.Value ? null : reader["Name"].ToString(),
+                Email = reader["Email"] == DBNull.Value ? null : reader["Email"].ToString(),
+                Role = reader["Role"] == DBNull.Value ? "member" : reader["Role"].ToString() ?? "member",
+                CreatedAt = reader["Created_at"] == DBNull.Value ? null : Convert.ToDateTime(reader["Created_at"])
+            };
         }
     }
 }

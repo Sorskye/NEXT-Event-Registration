@@ -4,6 +4,6 @@ namespace DAL.Repositories.Interfaces;
 
 public interface IUserRepository
 {
-    User GetUserByEmailAndPassword(string email, string password);
+    User GetUserByEmail(string email);
     bool IsUserAdmin(int userId);
 }

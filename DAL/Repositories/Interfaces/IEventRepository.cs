@@ -8,7 +8,9 @@ public interface IEventRepository
     void RegisterUserForEvent(int userId, int eventId);
     void UnregisterUserFromEvent(int userId, int eventId);
     List<Event> GetRegisteredEventsByUser(int userId);
+    List<Event> GetEventsByUser(int userId);
     List<Event> GetUpcomingEventsByUser(int userId);
     bool IsUserRegistered(int userId, int eventId);
     void CreateEvent(Event ev);
+    void CreateEvent(Event ev, int creatorUserId);
 }

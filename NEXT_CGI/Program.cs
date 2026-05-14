@@ -17,7 +17,7 @@ builder.Services.AddAuth0WebAppAuthentication(options =>
     options.ClientSecret = builder.Configuration["Auth0:ClientSecret"];
 });
 
-// connection string
+// connection string en repos
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is missing.");
 

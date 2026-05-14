@@ -8,14 +8,13 @@ namespace NEXT.Pages.Events
     public class EventDetailsModel : PageModel
     {
         private readonly IEventRepository _eventRepository;
+        public Event SelectedEvent { get; set; }
+        public bool IsRegistered { get; set; }
 
         public EventDetailsModel(IEventRepository eventRepository)
         {
             this._eventRepository = eventRepository;
         }
-
-        public Event SelectedEvent { get; set; }
-        public bool IsRegistered { get; set; }
 
         public IActionResult OnGet(int id)
         {

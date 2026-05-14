@@ -7,12 +7,10 @@ namespace NEXT.Pages.Events
 {
     public class CreateEventModel : PageModel
     {
-        private readonly IWebHostEnvironment _environment;
         private readonly IEventRepository _eventRepository;
 
-        public CreateEventModel(IWebHostEnvironment environment, IEventRepository eventRepository)
+        public CreateEventModel(IEventRepository eventRepository)
         {
-            _environment = environment;
             this._eventRepository = eventRepository;
         }
 
@@ -32,56 +30,72 @@ namespace NEXT.Pages.Events
         public int MaxParticipants { get; set; }
 
         [BindProperty]
-        public IFormFile ImageFile { get; set; }
+        public decimal? Cost { get; set; }
+
+        [BindProperty]
+        public decimal? LotteryPrize { get; set; }
+
+        [BindProperty]
+        public IFormFile? ImageFile { get; set; }
+
+        public string? ErrorMessage { get; set; }
 
         public IActionResult OnGet()
         {
+            if (!IsCurrentUserAdmin())
+            {
+                return RedirectToPage("/Home/Homepage");
+            }
+
             Date = DateTime.Now;
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public IActionResult OnPost()
         {
-            string imagePath = "/images/default.jpg";
-
-            if (ImageFile != null && ImageFile.Length > 0)
+            int? currentUserId = HttpContext.Session.GetInt32("UserId");
+            if (!currentUserId.HasValue)
             {
-                string uploadsFolder = Path.Combine(_environment.WebRootPath, "images", "events");
-
-                if (!Directory.Exists(uploadsFolder))
-                {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
-
-                string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageFile.FileName);
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await ImageFile.CopyToAsync(fileStream);
-                }
-
-                imagePath = "/images/events/" + uniqueFileName;
+                return RedirectToPage("/Auth/Login");
             }
 
-            int? currentUserId = HttpContext.Session.GetInt32("UserId");
+            if (!IsCurrentUserAdmin())
+            {
+                return RedirectToPage("/Home/Homepage");
+            }
+
+            byte[]? photoBytes = null;
+            if (ImageFile != null && ImageFile.Length > 0)
+            {
+                if (ImageFile.Length > 5 * 1024 * 1024)
+                {
+                    ErrorMessage = "De afbeelding mag maximaal 5 MB zijn.";
+                    return Page();
+                }
+
+                using MemoryStream memoryStream = new MemoryStream();
+                ImageFile.CopyTo(memoryStream);
+                photoBytes = memoryStream.ToArray();
+            }
+
             _eventRepository.CreateEvent(new Event
             {
-                Title = Title,
+                Name = Title,
                 Description = Description,
-                Date = Date,
-                Location = Location,
-
-                // Change organizer type to 'int' in database
-                // then use currentUserId instead of "temp"
-                Organizer = "temp",
-
-                ImageUrl = imagePath,
-                CurrentParticipants = 0,
+                DateTime = Date,
+                LocationName = Location,
+                Photo = photoBytes,
+                Cost = Cost,
+                LotteryPrize = LotteryPrize,
                 MaxParticipants = MaxParticipants
-            });
+            }, currentUserId.Value);
 
             return RedirectToPage("/Home/Homepage");
+        }
+
+        private bool IsCurrentUserAdmin()
+        {
+            return string.Equals(HttpContext.Session.GetString("UserRole"), "Admin", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

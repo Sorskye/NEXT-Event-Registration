@@ -1,4 +1,5 @@
 using DAL.Repositories.Interfaces;
+using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -16,9 +17,6 @@ namespace NEXT.Pages.Auth
         [BindProperty]
         public string? Email { get; set; }
 
-        [BindProperty]
-        public string? Password { get; set; }
-
         public string? ErrorMessage { get; set; }
 
         public void OnGet()
@@ -27,23 +25,31 @@ namespace NEXT.Pages.Auth
 
         public IActionResult OnPost()
         {
-            if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
+            if (string.IsNullOrWhiteSpace(Email))
             {
-                ErrorMessage = "Vul zowel je email als wachtwoord in.";
+                ErrorMessage = "Vul je email in.";
                 return Page();
             }
 
-            var user = _userRepository.GetUserByEmailAndPassword(Email, Password);
-
-            if (user == null)
+            try
             {
-                ErrorMessage = "Onjuiste inloggegevens.";
+                var user = _userRepository.GetUserByEmail(Email);
+
+                if (user == null)
+                {
+                    ErrorMessage = "Geen gebruiker gevonden met dit emailadres.";
+                    return Page();
+                }
+
+                HttpContext.Session.SetInt32("UserId", user.Id);
+                HttpContext.Session.SetString("UserName", user.Name ?? user.Email ?? "Gebruiker");
+                HttpContext.Session.SetString("UserRole", user.IsAdmin ? "Admin" : "User");
+            }
+            catch (SqlException)
+            {
+                ErrorMessage = "Kan geen verbinding maken met de database. Controleer of je op het juiste netwerk/VPN zit en probeer opnieuw.";
                 return Page();
             }
-
-            HttpContext.Session.SetInt32("UserId", user.Id);
-            HttpContext.Session.SetString("UserName", user.Name);
-            HttpContext.Session.SetString("UserRole", user.Role ? "Admin" : "User");
 
             return RedirectToPage("/Home/Homepage");
         }

@@ -10,6 +10,12 @@ namespace NEXT.Pages.Dashboards
     {
         private readonly IEventRepository _eventRepository;
         private readonly IUserRepository _userRepository;
+        public int TotalEvents { get; set; }
+        public string UserName { get; set; }
+        public bool IsAdmin { get; set; }
+        public List<Event> UserMadeEvents { get; set; }
+        public List<Event> RegisteredEvents { get; set; }
+        public List<Event> UpcomingEvents { get; set; }
 
         //const
         public AdminDashboardModel(IEventRepository eventRepository, IUserRepository userRepository)
@@ -18,16 +24,6 @@ namespace NEXT.Pages.Dashboards
             this._userRepository = userRepository;
         }
 
-        private readonly string connectionString;
-        public int TotalEvents { get; set; }
-        public string UserName { get; set; }
-
-        private int currentUserId = 1;
-        public bool IsAdmin { get; set; }
-
-        public List<Event> UserMadeEvents { get; set; }
-        public List<Event> RegisteredEvents { get; set; }
-        public List<Event> UpcomingEvents { get; set; }
 
         public IActionResult OnGet()
         {
@@ -40,9 +36,14 @@ namespace NEXT.Pages.Dashboards
             IsAdmin = true;
 
             int? currentUserId = HttpContext.Session.GetInt32("UserId");
+            if (!currentUserId.HasValue)
+            {
+                return RedirectToPage("/Auth/Login");
+            }
+
             UserName = HttpContext.Session.GetString("UserName");
 
-            UserMadeEvents = _eventRepository.GetRegisteredEventsByUser(currentUserId.Value);
+            UserMadeEvents = _eventRepository.GetEventsByUser(currentUserId.Value);
             RegisteredEvents = _eventRepository.GetRegisteredEventsByUser(currentUserId.Value);
             UpcomingEvents = _eventRepository.GetUpcomingEventsByUser(currentUserId.Value);
 
@@ -55,14 +56,26 @@ namespace NEXT.Pages.Dashboards
 
         public IActionResult OnPostRegister(int id)
         {
-            _eventRepository.RegisterUserForEvent(currentUserId, id);
+            int? currentUserId = HttpContext.Session.GetInt32("UserId");
+            if (!currentUserId.HasValue)
+            {
+                return RedirectToPage("/Auth/Login");
+            }
+
+            _eventRepository.RegisterUserForEvent(currentUserId.Value, id);
 
             return RedirectToPage();
         }
 
         public IActionResult OnPostUnregister(int id)
         {
-            _eventRepository.UnregisterUserFromEvent(currentUserId, id);
+            int? currentUserId = HttpContext.Session.GetInt32("UserId");
+            if (!currentUserId.HasValue)
+            {
+                return RedirectToPage("/Auth/Login");
+            }
+
+            _eventRepository.UnregisterUserFromEvent(currentUserId.Value, id);
 
             return RedirectToPage();
         }

@@ -10,7 +10,6 @@ namespace NEXT.Pages.Dashboards
     {
         private readonly IEventRepository _eventRepository;
         private readonly IUserRepository _userRepository;
-        private int currentUserId = 1;
 
         public UserDashboardModel(IEventRepository eventRepository, IUserRepository userRepository)
         {
@@ -23,24 +22,43 @@ namespace NEXT.Pages.Dashboards
         public List<Event> RegisteredEvents { get; set; }
         public List<Event> UpcomingEvents { get; set; }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
-            RegisteredEvents = _eventRepository.GetRegisteredEventsByUser(currentUserId);
-            UpcomingEvents = _eventRepository.GetUpcomingEventsByUser(currentUserId);
+            int? currentUserId = HttpContext.Session.GetInt32("UserId");
+            if (!currentUserId.HasValue)
+            {
+                return RedirectToPage("/Auth/Login");
+            }
 
-            IsAdmin = _userRepository.IsUserAdmin(currentUserId);
+            RegisteredEvents = _eventRepository.GetRegisteredEventsByUser(currentUserId.Value);
+            UpcomingEvents = _eventRepository.GetUpcomingEventsByUser(currentUserId.Value);
+
+            IsAdmin = _userRepository.IsUserAdmin(currentUserId.Value);
+            return Page();
         }
 
         public IActionResult OnPostRegister(int id)
         {
-            _eventRepository.RegisterUserForEvent(currentUserId, id);
+            int? currentUserId = HttpContext.Session.GetInt32("UserId");
+            if (!currentUserId.HasValue)
+            {
+                return RedirectToPage("/Auth/Login");
+            }
+
+            _eventRepository.RegisterUserForEvent(currentUserId.Value, id);
 
             return RedirectToPage();
         }
 
         public IActionResult OnPostUnregister(int id)
         {
-            _eventRepository.UnregisterUserFromEvent(currentUserId, id);
+            int? currentUserId = HttpContext.Session.GetInt32("UserId");
+            if (!currentUserId.HasValue)
+            {
+                return RedirectToPage("/Auth/Login");
+            }
+
+            _eventRepository.UnregisterUserFromEvent(currentUserId.Value, id);
 
             return RedirectToPage();
         }
