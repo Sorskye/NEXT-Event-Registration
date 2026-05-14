@@ -6,7 +6,7 @@ using NERA.Models;
 
 namespace DAL.Repositories.SqlServer
 {
-    public class SQLServerEventRepository : IEventRepository
+    public class SqlServerEventRepository : IEventRepository
     {
         private readonly string connectionString;
 
@@ -34,7 +34,7 @@ namespace DAL.Repositories.SqlServer
                 ORDER BY ue.UserID
             ) organizer";
 
-        public SQLServerEventRepository(string connectionString)
+        public SqlServerEventRepository(string connectionString)
         {
             this.connectionString = connectionString;
         }
