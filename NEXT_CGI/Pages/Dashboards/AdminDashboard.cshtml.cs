@@ -9,6 +9,7 @@ namespace NEXT.Pages.Dashboards
     public class AdminDashboardModel : PageModel
     {
         private readonly IEventRepository _eventRepository;
+        private readonly IEventRegistrationRepository _eventRegistrationRepository;
         private readonly IUserRepository _userRepository;
         public int TotalEvents { get; set; }
         public string UserName { get; set; }
@@ -18,9 +19,13 @@ namespace NEXT.Pages.Dashboards
         public List<Event> UpcomingEvents { get; set; }
 
         //const
-        public AdminDashboardModel(IEventRepository eventRepository, IUserRepository userRepository)
+        public AdminDashboardModel(
+            IEventRepository eventRepository,
+            IEventRegistrationRepository eventRegistrationRepository,
+            IUserRepository userRepository)
         {
             this._eventRepository = eventRepository;
+            this._eventRegistrationRepository = eventRegistrationRepository;
             this._userRepository = userRepository;
         }
 
@@ -44,8 +49,8 @@ namespace NEXT.Pages.Dashboards
             UserName = HttpContext.Session.GetString("UserName");
 
             UserMadeEvents = _eventRepository.GetEventsByUser(currentUserId.Value);
-            RegisteredEvents = _eventRepository.GetRegisteredEventsByUser(currentUserId.Value);
-            UpcomingEvents = _eventRepository.GetUpcomingEventsByUser(currentUserId.Value);
+            RegisteredEvents = _eventRegistrationRepository.GetRegisteredEventsByUser(currentUserId.Value);
+            UpcomingEvents = _eventRegistrationRepository.GetUpcomingEventsByUser(currentUserId.Value);
 
             IsAdmin = _userRepository.IsUserAdmin(currentUserId.Value);
 
@@ -62,7 +67,7 @@ namespace NEXT.Pages.Dashboards
                 return RedirectToPage("/Auth/Login");
             }
 
-            _eventRepository.RegisterUserForEvent(currentUserId.Value, id);
+            _eventRegistrationRepository.RegisterUserForEvent(currentUserId.Value, id);
 
             return RedirectToPage();
         }
@@ -75,7 +80,7 @@ namespace NEXT.Pages.Dashboards
                 return RedirectToPage("/Auth/Login");
             }
 
-            _eventRepository.UnregisterUserFromEvent(currentUserId.Value, id);
+            _eventRegistrationRepository.UnregisterUserFromEvent(currentUserId.Value, id);
 
             return RedirectToPage();
         }

@@ -8,12 +8,16 @@ namespace NEXT.Pages.Events
     public class EventDetailsModel : PageModel
     {
         private readonly IEventRepository _eventRepository;
+        private readonly IEventRegistrationRepository _eventRegistrationRepository;
         public Event SelectedEvent { get; set; }
         public bool IsRegistered { get; set; }
 
-        public EventDetailsModel(IEventRepository eventRepository)
+        public EventDetailsModel(
+            IEventRepository eventRepository,
+            IEventRegistrationRepository eventRegistrationRepository)
         {
             this._eventRepository = eventRepository;
+            this._eventRegistrationRepository = eventRegistrationRepository;
         }
 
         public IActionResult OnGet(int id)
@@ -27,7 +31,7 @@ namespace NEXT.Pages.Events
 
             SelectedEvent = _eventRepository.GetEventById(id);
 
-            IsRegistered = _eventRepository.IsUserRegistered(currentUserId.Value, id);
+            IsRegistered = _eventRegistrationRepository.IsUserRegistered(currentUserId.Value, id);
 
             return Page();
         }

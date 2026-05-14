@@ -8,12 +8,12 @@ namespace NEXT.Pages.Home
 {
     public class HomepageModel : PageModel
     {
-        private readonly IEventRepository _eventRepository;
+        private readonly IEventRegistrationRepository _eventRegistrationRepository;
         private readonly IUserRepository _userRepository;
 
-        public HomepageModel(IEventRepository eventRepository, IUserRepository userRepository)
+        public HomepageModel(IEventRegistrationRepository eventRegistrationRepository, IUserRepository userRepository)
         {
-            this._eventRepository = eventRepository;
+            this._eventRegistrationRepository = eventRegistrationRepository;
             this._userRepository = userRepository;
         }
 
@@ -31,8 +31,8 @@ namespace NEXT.Pages.Home
                 return RedirectToPage("/Auth/Login");
             }
 
-            RegisteredEvents = _eventRepository.GetRegisteredEventsByUser(currentUserId.Value);
-            UpcomingEvents = _eventRepository.GetUpcomingEventsByUser(currentUserId.Value);
+            RegisteredEvents = _eventRegistrationRepository.GetRegisteredEventsByUser(currentUserId.Value);
+            UpcomingEvents = _eventRegistrationRepository.GetUpcomingEventsByUser(currentUserId.Value);
 
             IsAdmin = _userRepository.IsUserAdmin(currentUserId.Value);
             CurrentUserName = HttpContext.Session.GetString("UserName") ?? "Gebruiker";
@@ -49,7 +49,7 @@ namespace NEXT.Pages.Home
                 return RedirectToPage("/Auth/Login");
             }
 
-            _eventRepository.RegisterUserForEvent(currentUserId.Value, id);
+            _eventRegistrationRepository.RegisterUserForEvent(currentUserId.Value, id);
 
             return RedirectToPage();
         }
@@ -63,7 +63,7 @@ namespace NEXT.Pages.Home
                 return RedirectToPage("/Auth/Login");
             }
 
-            _eventRepository.UnregisterUserFromEvent(currentUserId.Value, id);
+            _eventRegistrationRepository.UnregisterUserFromEvent(currentUserId.Value, id);
 
             return RedirectToPage();
         }
