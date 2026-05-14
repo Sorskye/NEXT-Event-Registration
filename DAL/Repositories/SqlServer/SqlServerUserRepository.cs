@@ -68,31 +68,6 @@ namespace DAL.Repositories.SqlServer
             return false;
         }
 
-        public User GetUserById(int userId)
-        {
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                conn.Open();
-
-                string query = "SELECT ID, Auth0_id, Name, Email, Role, Created_at FROM Users WHERE ID = @Id";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@Id", userId);
-
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            return ReadUser(reader);
-                        }
-                    }
-                }
-            }
-
-            return null;
-        }
-
         private static User ReadUser(SqlDataReader reader)
         {
             return new User

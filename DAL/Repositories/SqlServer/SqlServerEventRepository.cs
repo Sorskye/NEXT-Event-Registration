@@ -300,11 +300,6 @@ namespace DAL.Repositories.SqlServer
             return (int)cmd.ExecuteScalar();
         }
 
-        public void CreateEvent(Event ev)
-        {
-            CreateEvent(ev, null);
-        }
-
         public void CreateEvent(Event ev, int creatorUserId)
         {
             CreateEvent(ev, (int?)creatorUserId);
@@ -363,26 +358,6 @@ namespace DAL.Repositories.SqlServer
                 transaction.Rollback();
                 throw;
             }
-        }
-
-        public List<Event> GetAllEvents()
-        {
-            List<Event> events = new List<Event>();
-
-            using SqlConnection conn = new SqlConnection(connectionString);
-            conn.Open();
-
-            using SqlCommand cmd = new SqlCommand(EventSelect + " ORDER BY e.Date_time ASC", conn);
-            using SqlDataReader reader = cmd.ExecuteReader();
-
-            while (reader.Read())
-            {
-                Event ev = ReadEvent(reader);
-                ev.CurrentParticipants = GetParticipantCountByEventId(ev.Id);
-                events.Add(ev);
-            }
-
-            return events;
         }
 
         private static Event ReadEvent(SqlDataReader reader)
