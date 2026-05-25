@@ -18,7 +18,8 @@ namespace DAL.Repositories.SqlServer
                 e.Lottery_prize,
                 l.Name AS LocationName,
                 organizer.Name AS OrganizerName,
-                organizer.Email AS OrganizerEmail
+                organizer.Email AS OrganizerEmail,
+                (SELECT COUNT(*) FROM Registration_Event re_count WHERE re_count.EventID = e.ID) AS CurrentParticipants
             FROM Event e
             LEFT JOIN Location l ON e.LocationID = l.ID
             OUTER APPLY (
@@ -45,6 +46,7 @@ namespace DAL.Repositories.SqlServer
                 MaxParticipants = reader["Max_participants"] == DBNull.Value ? null : Convert.ToInt32(reader["Max_participants"]),
                 LotteryPrize = reader["Lottery_prize"] == DBNull.Value ? null : Convert.ToDecimal(reader["Lottery_prize"]),
                 LocationName = reader["LocationName"] == DBNull.Value ? null : reader["LocationName"].ToString(),
+                CurrentParticipants = Convert.ToInt32(reader["CurrentParticipants"]),
                 Organizer = GetOrganizerDisplayName(reader),
                 ImageUrl = photo == null ? "/images/placeholder-image.png" : $"data:image/jpeg;base64,{Convert.ToBase64String(photo)}"
             };

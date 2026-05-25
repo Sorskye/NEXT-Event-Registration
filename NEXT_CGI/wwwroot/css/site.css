@@ -14,27 +14,100 @@ body {
     margin-bottom: 60px;
 }
 
+.nera-navbar {
+    background: #e8e8e8;
+    border: none;
+    box-shadow: none;
+    margin-bottom: 32px;
+}
+
+.nera-navbar-inner {
+    min-height: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+}
+
+.nera-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    color: #050505;
+    text-decoration: none;
+}
+
+    .nera-brand:hover {
+        color: #050505;
+    }
+
+.nera-brand-name {
+    font-size: 2.25rem;
+    line-height: 1;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+}
+
+.nera-brand-divider {
+    width: 1px;
+    height: 46px;
+    background: #111111;
+    display: inline-block;
+}
+
+.nera-brand-subtitle {
+    font-size: 0.92rem;
+    line-height: 1.35;
+    font-weight: 400;
+}
+
+.nera-nav-links {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 28px;
+}
+
+.nera-nav-link {
+    color: #050505;
+    text-decoration: none;
+    font-size: 0.95rem;
+    line-height: 1;
+    padding: 6px 0;
+    border-bottom: 1px solid transparent;
+}
+
+    .nera-nav-link:hover,
+    .nera-nav-link.active {
+        color: #050505;
+        border-bottom-color: #050505;
+    }
+
 .navbar .container {
     align-items: center;
 }
 
 .navbar-logout-form {
     margin: 0;
-    margin-left: auto;
 }
 
-.navbar-logout-link {
+.navbar-logout-btn {
     appearance: none;
-    background: none;
-    border: none;
-    padding: 8px 0;
-    color: #8b2e4b;
-    font-weight: 700;
+    background: transparent;
+    border: 1.5px solid #111827;
+    border-radius: 999px;
+    padding: 7px 20px;
+    color: #111827;
+    font-size: 0.88rem;
+    font-weight: 600;
     cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+    line-height: 1;
 }
 
-    .navbar-logout-link:hover {
-        color: #6f213c;
+    .navbar-logout-btn:hover {
+        background: #111827;
+        color: #ffffff;
     }
 
 .btn:focus,
@@ -47,14 +120,10 @@ body {
 
 /* Logo */
 
-.corner-logo {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 120px;
-    margin-top: 40px;
-    margin-left: 1rem;
-    z-index: 2;
+.nera-brand-logo {
+    height: 42px;
+    width: auto;
+    display: block;
 }
 
 /* Algemene secties */
@@ -578,13 +647,35 @@ body {
     }
 
 @media (max-width: 768px) {
-    .navbar-logout-form {
-        margin-left: 0;
+    .nera-navbar-inner {
+        min-height: auto;
+        padding-top: 22px;
+        padding-bottom: 22px;
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .nera-nav-links {
         width: 100%;
+        justify-content: flex-start;
+        gap: 22px;
+        flex-wrap: wrap;
+    }
+
+    .nera-brand-name {
+        font-size: 1.9rem;
+    }
+
+    .nera-brand-divider {
+        height: 40px;
+    }
+
+    .navbar-logout-form {
+        width: auto;
     }
 
     .navbar-logout-link {
-        padding-top: 10px;
+        padding-top: 6px;
     }
 
     .homepage-admin-action {

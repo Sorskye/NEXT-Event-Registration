@@ -124,9 +124,7 @@ namespace DAL.Repositories.SqlServer
 
             while (dr.Read())
             {
-                Event ev = SqlServerEventMapper.ReadEvent(dr);
-                ev.CurrentParticipants = GetParticipantCountByEventId(ev.Id);
-                events.Add(ev);
+                events.Add(SqlServerEventMapper.ReadEvent(dr));
             }
 
             return events;
@@ -155,9 +153,7 @@ namespace DAL.Repositories.SqlServer
 
             while (dr.Read())
             {
-                Event ev = SqlServerEventMapper.ReadEvent(dr);
-                ev.CurrentParticipants = GetParticipantCountByEventId(ev.Id);
-                events.Add(ev);
+                events.Add(SqlServerEventMapper.ReadEvent(dr));
             }
 
             return events;

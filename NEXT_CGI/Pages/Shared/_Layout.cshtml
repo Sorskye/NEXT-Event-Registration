@@ -11,48 +11,48 @@
     <link rel="stylesheet" href="~/NERA.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">NERA</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Home/Index">Home</a>
-                        </li>
-                        
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Dashboards/AdminDashboard">Dashboard</a>
-                        </li>
-                            <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Home/Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                    @if (!string.IsNullOrEmpty(Context.Session.GetString("UserName")))
-                    {
-                        <form method="post" asp-page="/Home/Homepage" asp-page-handler="Logout" class="navbar-logout-form">
-                            <button type="submit" class="navbar-logout-link">Uitloggen</button>
-                        </form>
-                    }
+    @{
+        var currentPath = Context.Request.Path.Value ?? string.Empty;
+        var isAdmin = string.Equals(Context.Session.GetString("UserRole"), "Admin", StringComparison.OrdinalIgnoreCase);
+        var dashboardPage = isAdmin ? "/Dashboards/AdminDashboard" : "/Dashboards/UserDashboard";
+        var isHomeActive = currentPath.Contains("/Home", StringComparison.OrdinalIgnoreCase)
+            || currentPath.Contains("/Homepage", StringComparison.OrdinalIgnoreCase);
+        var isDashboardActive = currentPath.Contains("/Dashboards", StringComparison.OrdinalIgnoreCase);
+        var isLoginPage = currentPath.Equals("/Login", StringComparison.OrdinalIgnoreCase)
+            || currentPath.Contains("/Auth/Login", StringComparison.OrdinalIgnoreCase);
+    }
+    @if (!isLoginPage)
+    {
+        <header>
+            <nav class="nera-navbar">
+                <div class="container nera-navbar-inner">
+                    <a class="nera-brand" asp-area="" asp-page="/Home/Homepage" aria-label="NERA home">
+                        <img src="/images/corner.png" class="nera-brand-logo" alt="" />
+                        <span class="nera-brand-name">NERA</span>
+                        <span class="nera-brand-divider"></span>
+                        <span class="nera-brand-subtitle">DOOR<br />CGI</span>
+                    </a>
+
+                    <div class="nera-nav-links">
+                        <a class="nera-nav-link @(isHomeActive ? "active" : "")" asp-area="" asp-page="/Home/Homepage">Home</a>
+                        <a class="nera-nav-link @(isDashboardActive ? "active" : "")" asp-area="" asp-page="@dashboardPage">Dashboard</a>
+
+                        @if (!string.IsNullOrEmpty(Context.Session.GetString("UserName")))
+                        {
+                            <form method="post" asp-page="/Home/Homepage" asp-page-handler="Logout" class="navbar-logout-form">
+                                <button type="submit" class="navbar-logout-btn">Uitloggen</button>
+                            </form>
+                        }
+                    </div>
                 </div>
-            </div>
-        </nav>
-    </header>
+            </nav>
+        </header>
+    }
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - NERA - <a asp-area="" asp-page="/Privacy">Privacy</a>
-        </div>
-    </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
