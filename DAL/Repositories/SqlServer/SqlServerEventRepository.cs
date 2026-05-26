@@ -88,7 +88,7 @@ namespace DAL.Repositories.SqlServer
                 cmd.Parameters.AddWithValue("@Name", (object?)ev.Name ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Description", (object?)ev.Description ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Photo", (object?)ev.Photo ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@DateTime", (object?)ev.DateTime ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@DateTime", (object?)ev.DateTime_beginning ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Cost", (object?)ev.Cost ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@MaxParticipants", (object?)ev.MaxParticipants ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@LotteryPrize", (object?)ev.LotteryPrize ?? DBNull.Value);

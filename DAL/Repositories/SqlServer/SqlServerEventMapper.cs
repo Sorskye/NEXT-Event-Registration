@@ -41,7 +41,7 @@ namespace DAL.Repositories.SqlServer
                 Name = reader["Name"] == DBNull.Value ? null : reader["Name"].ToString(),
                 Description = reader["Description"] == DBNull.Value ? null : reader["Description"].ToString(),
                 Photo = photo,
-                DateTime = reader["Date_time"] == DBNull.Value ? null : Convert.ToDateTime(reader["Date_time"]),
+                DateTime_beginning = reader["Date_time"] == DBNull.Value ? null : Convert.ToDateTime(reader["Date_time"]),
                 Cost = reader["Cost"] == DBNull.Value ? null : Convert.ToDecimal(reader["Cost"]),
                 MaxParticipants = reader["Max_participants"] == DBNull.Value ? null : Convert.ToInt32(reader["Max_participants"]),
                 LotteryPrize = reader["Lottery_prize"] == DBNull.Value ? null : Convert.ToDecimal(reader["Lottery_prize"]),
