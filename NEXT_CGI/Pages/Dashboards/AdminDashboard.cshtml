@@ -43,6 +43,10 @@
                                     </div>
 
                                     <div class="event-actions">
+                                        <div class="event-rapport">
+                                            <a asp-page="/Dashboards/Rapport" asp-route-id="@ev.Id" class="btn btn-nera-secondary">Bekijk rapport</a>
+                                        </div>
+
                                         <form method="post" asp-page-handler="Unregister">
                                             <input type="hidden" name="id" value="@ev.Id"/>
                                             <button type="submit" class="btn btn-nera-secondary">Afmelden</button>
