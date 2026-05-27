@@ -25,10 +25,10 @@ namespace NEXT.Pages.Home
         public IActionResult OnGet()
         {
             int? currentUserId = HttpContext.Session.GetInt32("UserId");
-
+            
             if (!currentUserId.HasValue)
             {
-                return RedirectToPage("/Auth/Login");
+                //return RedirectToPage("/Auth/Login");
             }
 
             RegisteredEvents = _eventRegistrationRepository.GetRegisteredEventsByUser(currentUserId.Value);
