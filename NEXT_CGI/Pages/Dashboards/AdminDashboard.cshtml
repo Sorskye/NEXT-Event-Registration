@@ -50,25 +50,6 @@
                                             </a>
                                         </div>
 
-                                        @if (ev.IsRegistered)
-                                        {
-                                            <form method="post" asp-page-handler="Unregister">
-                                                <input type="hidden" name="id" value="@ev.Id" />
-                                                <button type="submit" class="btn btn-nera-secondary">
-                                                    Afmelden
-                                                </button>
-                                            </form>
-                                        }
-                                        else
-                                        {
-                                            <form method="post" asp-page-handler="Register">
-                                                <input type="hidden" name="id" value="@ev.Id" />
-                                                <button type="submit" class="btn btn-nera-primary">
-                                                    Meld aan
-                                                </button>
-                                            </form>
-                                        }
-
                                     </div>
                                 </div>
                             </div>
@@ -82,5 +63,8 @@
             <p>Je hebt nog geen evenementen aangemaakt.</p>
         }
 
+        <section class="section-block">
+            <h2 class="section-title">Jouw Verlopen evenementen:</h2>
+        </section>
     </div>
 </div>

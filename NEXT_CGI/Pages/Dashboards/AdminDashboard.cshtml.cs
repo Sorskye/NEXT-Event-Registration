@@ -18,8 +18,10 @@ namespace NEXT.Pages.Dashboards
         public List<Event> UserMadeEvents { get; set; }
         public List<Event> RegisteredEvents { get; set; }
         public List<Event> UpcomingEvents { get; set; }
+        //public List<Event> DateTime_ending { get; set }
 
-        
+
+
         public AdminDashboardModel(
             IEventRepository eventRepository,
             IEventRegistrationRepository eventRegistrationRepository,
