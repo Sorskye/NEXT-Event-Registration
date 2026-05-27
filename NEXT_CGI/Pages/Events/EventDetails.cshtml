@@ -11,13 +11,13 @@
         <div class="details-grid">
             <section class="details-main-card">
                 <img src="@Model.SelectedEvent.ImageUrl"
-                     alt="@Model.SelectedEvent.Title"
+                     alt="@Model.SelectedEvent.Name"
                      class="details-image" />
 
                 <div class="details-main-body">
                     <div class="event-badge">NERA Event</div>
 
-                    <h1 class="event-title">@Model.SelectedEvent.Title</h1>
+                    <h1 class="event-title">@Model.SelectedEvent.Name</h1>
 
                     <p class="event-description">
                         @Model.SelectedEvent.Description
@@ -48,12 +48,23 @@
                 <div class="info-list">
                     <div class="info-item">
                         <div class="info-label">Locatie</div>
-                        <div class="info-value">@Model.SelectedEvent.Location</div>
+                        <div class="info-value">@Model.SelectedEvent.LocationName</div>
                     </div>
 
                     <div class="info-item">
-                        <div class="info-label">Datum en Tijd</div>
-                        <div class="info-value">@Model.SelectedEvent.Date.ToString("dd-MM-yyyy HH:mm")</div>
+                        <div class="info-label">Begindatum</div>
+                        <div class="info-value">
+                            @Model.SelectedEvent.Beginning_date?.ToString("dd-MM-yyyy")
+                            @Model.SelectedEvent.Beginning_time?.ToString("HH:mm")
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-label">Einddatum</div>
+                        <div class="info-value">
+                            @Model.SelectedEvent.Ending_date?.ToString("dd-MM-yyyy")
+                            @Model.SelectedEvent.Ending_time?.ToString("HH:mm")
+                        </div>
                     </div>
 
                     <div class="info-item">
@@ -65,9 +76,10 @@
                         <div class="info-label">Deelnemers</div>
                         <div class="info-value">@Model.SelectedEvent.CurrentParticipants / @Model.SelectedEvent.MaxParticipants</div>
                     </div>
+
                     <div class="info-item">
                         <div class="info-label">Kosten</div>
-                        <div class="info-value">@Model.SelectedEvent.Costs</div>
+                        <div class="info-value">@Model.SelectedEvent.Cost</div>
                     </div>
                 </div>
 

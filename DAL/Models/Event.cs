@@ -9,13 +9,13 @@ namespace NERA.Models
         public string? Name { get; set; }
         public string? Description { get; set; }
         public byte[]? Photo { get; set; }
-        public DateTime? DateTime_beginning { get; set; }
+        public DateOnly? Beginning_date { get; set; }
         
-        public DateTime? DateTime_ending { get; set; }
+        public DateOnly? Ending_date { get; set; }
         
-        public TimeSpan? BeginningTime { get; set; }
+        public TimeOnly? Beginning_time { get; set; }
         
-        public TimeSpan? EndingTime { get; set; }
+        public TimeOnly? Ending_time { get; set; }
         public decimal? Cost { get; set; }
         public int? MaxParticipants { get; set; }
         public decimal? LotteryPrize { get; set; }
@@ -26,10 +26,10 @@ namespace NERA.Models
             get => Name;
             set => Name = value;
         }
-        public DateTime Date
+        public DateOnly Date
         {
-            get => DateTime_beginning ?? System.DateTime.MinValue;
-            set => DateTime_beginning = value;
+            get => Beginning_date ?? System.DateOnly.MinValue;
+            set => Beginning_date = value;
         }
         public string? Location
         {

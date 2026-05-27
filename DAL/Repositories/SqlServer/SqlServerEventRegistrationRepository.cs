@@ -115,7 +115,7 @@ namespace DAL.Repositories.SqlServer
                 INNER JOIN Registration_Event re ON e.ID = re.EventID
                 INNER JOIN Registration_User ru ON re.RegistrationID = ru.RegistrationID
                 WHERE ru.UserID = @UserID
-                ORDER BY e.Date_time ASC";
+                ORDER BY e.Beginning_date ASC, e.Beginning_time ASC";
 
             using SqlCommand cmd = new SqlCommand(sqlQuery, con);
             cmd.Parameters.AddWithValue("@UserID", userId);
@@ -144,7 +144,7 @@ namespace DAL.Repositories.SqlServer
                     INNER JOIN Registration_User ru ON re.RegistrationID = ru.RegistrationID
                     WHERE ru.UserID = @UserID
                 )
-                ORDER BY e.Date_time ASC";
+                ORDER BY e.Beginning_date ASC, e.Beginning_time ASC";
 
             using SqlCommand cmd = new SqlCommand(sqlQuery, con);
             cmd.Parameters.AddWithValue("@UserID", userId);

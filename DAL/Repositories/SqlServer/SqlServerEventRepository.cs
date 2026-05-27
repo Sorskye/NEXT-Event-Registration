@@ -45,7 +45,7 @@ namespace DAL.Repositories.SqlServer
             string sqlQuery = SqlServerEventMapper.EventSelect + @"
                 INNER JOIN User_Event ue ON e.ID = ue.EventID
                 WHERE ue.UserID = @UserID
-                ORDER BY e.Date_time ASC";
+                ORDER BY e.Beginning_date ASC, e.Beginning_time ASC";
 
             using SqlCommand cmd = new SqlCommand(sqlQuery, con);
             cmd.Parameters.AddWithValue("@UserID", userId);
@@ -67,7 +67,7 @@ namespace DAL.Repositories.SqlServer
 
             int? locationId = ev.LocationId;
 
-            if (!locationId.HasValue && !string.IsNullOrWhiteSpace(ev.LocationName))
+            if (locationId == null && !string.IsNullOrWhiteSpace(ev.LocationName))
             {
                 locationId = locationRepository.GetOrCreateLocationId(ev.LocationName);
             }
@@ -76,32 +76,41 @@ namespace DAL.Repositories.SqlServer
 
             try
             {
-                string query = @"
+                string insertEventQuery = @"
                 INSERT INTO Event
-                (LocationID, Name, Description, Photo, Date_time, Cost, Max_participants, Lottery_prize)
+                (LocationID, Name, Description, Photo, Cost, Max_participants, Lottery_prize,
+                 Beginning_date, Ending_date, Beginning_time, Ending_time)
                 OUTPUT INSERTED.ID
                 VALUES
-                (@LocationID, @Name, @Description, @Photo, @DateTime, @Cost, @MaxParticipants, @LotteryPrize)";
+                (@LocationID, @Name, @Description, @Photo, @Cost, @MaxParticipants, @LotteryPrize,
+                 @BeginningDate, @EndingDate, @BeginningTime, @EndingTime)";
 
-                using SqlCommand cmd = new SqlCommand(query, conn, transaction);
-                cmd.Parameters.AddWithValue("@LocationID", (object?)locationId ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@Name", (object?)ev.Name ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@Description", (object?)ev.Description ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@Photo", (object?)ev.Photo ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@DateTime", (object?)ev.DateTime_beginning ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@Cost", (object?)ev.Cost ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@MaxParticipants", (object?)ev.MaxParticipants ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@LotteryPrize", (object?)ev.LotteryPrize ?? DBNull.Value);
+                using SqlCommand eventCommand = new SqlCommand(insertEventQuery, conn, transaction);
 
-                int eventId = (int)cmd.ExecuteScalar();
+                eventCommand.Parameters.AddWithValue("@LocationID", locationId ?? (object)DBNull.Value);
+                eventCommand.Parameters.AddWithValue("@Name", ev.Name ?? (object)DBNull.Value);
+                eventCommand.Parameters.AddWithValue("@Description", ev.Description ?? (object)DBNull.Value);
+                eventCommand.Parameters.AddWithValue("@Photo", ev.Photo ?? (object)DBNull.Value);
+                eventCommand.Parameters.AddWithValue("@Cost", ev.Cost ?? (object)DBNull.Value);
+                eventCommand.Parameters.AddWithValue("@MaxParticipants", ev.MaxParticipants ?? (object)DBNull.Value);
+                eventCommand.Parameters.AddWithValue("@LotteryPrize", ev.LotteryPrize ?? (object)DBNull.Value);
+                eventCommand.Parameters.AddWithValue("@BeginningDate", ev.Beginning_date?.ToDateTime(TimeOnly.MinValue) ?? (object)DBNull.Value);
+                eventCommand.Parameters.AddWithValue("@EndingDate", ev.Ending_date?.ToDateTime(TimeOnly.MinValue) ?? (object)DBNull.Value);
+                eventCommand.Parameters.AddWithValue("@BeginningTime", ev.Beginning_time?.ToTimeSpan() ?? (object)DBNull.Value);
+                eventCommand.Parameters.AddWithValue("@EndingTime", ev.Ending_time?.ToTimeSpan() ?? (object)DBNull.Value);
 
-                using SqlCommand userEventCmd = new SqlCommand(
-                    "INSERT INTO User_Event (UserID, EventID) VALUES (@UserID, @EventID)",
-                    conn,
-                    transaction);
-                userEventCmd.Parameters.AddWithValue("@UserID", creatorUserId);
-                userEventCmd.Parameters.AddWithValue("@EventID", eventId);
-                userEventCmd.ExecuteNonQuery();
+                int eventId = Convert.ToInt32(eventCommand.ExecuteScalar());
+
+                string linkUserQuery = @"
+                INSERT INTO User_Event (UserID, EventID)
+                VALUES (@UserID, @EventID)";
+
+                using SqlCommand userEventCommand = new SqlCommand(linkUserQuery, conn, transaction);
+
+                userEventCommand.Parameters.AddWithValue("@UserID", creatorUserId);
+                userEventCommand.Parameters.AddWithValue("@EventID", eventId);
+
+                userEventCommand.ExecuteNonQuery();
 
                 transaction.Commit();
             }
