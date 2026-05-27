@@ -10,4 +10,5 @@ public interface IEventRegistrationRepository // Verantwoordelijk voor [REGISTRA
     List<Event> GetUpcomingEventsByUser(int userId);
     bool IsUserRegistered(int userId, int eventId);
     int GetParticipantCountByEventId(int eventId);
+
 }

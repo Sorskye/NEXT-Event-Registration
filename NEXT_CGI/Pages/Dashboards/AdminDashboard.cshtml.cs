@@ -39,8 +39,6 @@ namespace NEXT.Pages.Dashboards
                 return RedirectToPage("/Home/Homepage");
             }
 
-            IsAdmin = true;
-
             int? currentUserId = HttpContext.Session.GetInt32("UserId");
             if (!currentUserId.HasValue)
             {
@@ -49,11 +47,15 @@ namespace NEXT.Pages.Dashboards
 
             UserName = HttpContext.Session.GetString("UserName");
 
+            // Load events created by this organizer
             UserMadeEvents = _eventRepository.GetEventsByUser(currentUserId.Value);
-            RegisteredEvents = _eventRegistrationRepository.GetRegisteredEventsByUser(currentUserId.Value);
-            UpcomingEvents = _eventRegistrationRepository.GetUpcomingEventsByUser(currentUserId.Value);
 
-            IsAdmin = _userRepository.IsUserAdmin(currentUserId.Value);
+            // Mark whether the organizer is registered for each event
+            foreach (var ev in UserMadeEvents)
+            {
+                ev.IsRegistered = _eventRegistrationRepository
+                    .IsUserRegistered(currentUserId.Value, ev.Id);
+            }
 
             TotalEvents = UserMadeEvents.Count;
 

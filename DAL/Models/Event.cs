@@ -43,6 +43,8 @@ namespace NERA.Models
             get => Cost;
             set => Cost = value;
         }
+
+        public bool IsRegistered { get; set; }
     }
 
 }

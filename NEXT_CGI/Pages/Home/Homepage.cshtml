@@ -5,12 +5,6 @@
 }
 <div class="homepage-wrapper">
     <div class="homepage-container">
-        @if (Model.IsAdmin)
-        {
-            <div class="homepage-admin-action">
-                <a asp-page="/Events/CreateEvent" class="btn btn-nera-primary">Nieuw evenement aanmaken</a>
-                </div>
-        }
 
         @if (Model.RegisteredEvents != null && Model.RegisteredEvents.Any())
         {

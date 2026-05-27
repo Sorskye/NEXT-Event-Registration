@@ -269,8 +269,20 @@ body {
     min-width: 220px;
 }
 
-/* Details pagina */
+.btn-create-event
+{
+    background: linear-gradient(135deg, #8B2E4B, #5b3cc4);
+    color: white;
+    border: none;
+    border-radius: 999px;
+    padding: 12px 18px;
+    font-weight: 700;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    float: right;
+}
 
+
+/* Details pagina */
 .details-grid {
     display: grid;
     grid-template-columns: 1.7fr 1fr;
