@@ -1,8 +1,10 @@
+using DAL.Models;
 using DAL.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using NERA.Models;
 using System.Security.Claims;
+using static DAL.Repositories.SqlServer.SqlServerEventRegistrationRepository;
 
 namespace NEXT.Pages.Home
 {
@@ -26,50 +28,38 @@ namespace NEXT.Pages.Home
             _userRepository = userRepository;
         }
 
-        //public IActionResult OnGet(int eventId)
-        //{
-        //    EventItem = _eventRepository.GetEventById(eventId);
+        public IActionResult OnGet(int? eventId)
+        {
+            // Get the current user id from claims
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(userIdClaim, out var userId) || eventId == null)
+            {
+                Message = "Invalid request.";
+                IsSuccess = false;
+                return Page();
+            }       
 
-        //    if (EventItem == null)
-        //    {
-        //        Message = "Event niet gevonden.";
-        //        IsSuccess = false;
-        //        return Page();
-        //    }
+            var result = _eventRegistrationRepository.TryMarkAttendance(userId, eventId.Value, "Present");
 
-        //    string? externalId =
-        //        User.FindFirst(ClaimTypes.NameIdentifier)?.Value ??
-        //        User.FindFirst("sub")?.Value;
+        switch (result)
+        {
+            case AttendanceUpdateResult.Success:
+                Message = "Je aanwezigheid is bevestigd.";
+                IsSuccess = true;
+            break;
 
-        //    if (string.IsNullOrWhiteSpace(externalId))
-        //    {
-        //        Message = "Ingelogde gebruiker kon niet worden bepaald.";
-        //        IsSuccess = false;
-        //        return Page();
-        //    }
+            case AttendanceUpdateResult.NotRegistered:
+                Message = "Je bent niet aangemeld voor dit event.";
+                IsSuccess = false;
+            break;
 
-            //var user = _userRepository.GetUserByExternalId(externalId);
-            //if (user == null)
-            //{
-            //    Message = "Er is geen gekoppelde gebruiker gevonden in het systeem.";
-            //    IsSuccess = false;
-            //    return Page();
-            //}
+            case AttendanceUpdateResult.AlreadyAttended:
+                Message = "Je aanwezigheid was al eerder geregistreerd.";
+                IsSuccess = false;
+            break;
+        }
 
-        //    bool isRegistered = _eventRegistrationRepository.IsUserRegistered(user.Id, eventId);
-
-        //    if (isRegistered)
-        //    {
-        //        IsSuccess = true;
-        //        Message = "Bevestiging: je was aangemeld voor dit event.";
-        //    }
-        //    else
-        //    {
-        //        IsSuccess = false;
-        //        Message = "Je was niet aangemeld voor dit event.";
-        //    }
-
-        //    return Page();
-        //}
+            return Page();
+        }
     }
 }

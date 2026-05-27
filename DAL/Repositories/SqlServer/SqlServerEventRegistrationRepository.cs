@@ -12,6 +12,12 @@ namespace DAL.Repositories.SqlServer
         {
             this.connectionString = connectionString;
         }
+        public enum AttendanceUpdateResult
+        {
+            Success,
+            NotRegistered,
+            AlreadyAttended
+        }
 
         public void RegisterUserForEvent(int userId, int eventId)
         {
@@ -240,6 +246,56 @@ namespace DAL.Repositories.SqlServer
             cmd.Parameters.AddWithValue("@EventID", eventId);
             cmd.Parameters.AddWithValue("@RegistrationID", registrationId);
             cmd.ExecuteNonQuery();
+        }
+
+        public AttendanceUpdateResult TryMarkAttendance(int userId, int eventId, string attended)
+        {
+            using SqlConnection con = new SqlConnection(connectionString);
+            con.Open();
+
+            string selectQuery = @"
+                SELECT r.ID, r.Attended
+                FROM Registration r
+                INNER JOIN Registration_User ru ON r.ID = ru.RegistrationID
+                INNER JOIN Registration_Event re ON r.ID = re.RegistrationID
+                WHERE ru.UserID = @UserID
+                AND re.EventID = @EventID";
+
+            using SqlCommand selectCmd = new SqlCommand(selectQuery, con);
+            selectCmd.Parameters.AddWithValue("@UserID", userId);
+            selectCmd.Parameters.AddWithValue("@EventID", eventId);
+
+            using SqlDataReader reader = selectCmd.ExecuteReader();
+
+            if (!reader.Read())
+            {
+                return AttendanceUpdateResult.NotRegistered;
+            }
+
+            int registrationId = Convert.ToInt32(reader["ID"]);
+            string? currentAttended = reader["Attended"] == DBNull.Value
+                ? null
+                : reader["Attended"].ToString();
+
+            reader.Close();
+
+            if (!string.IsNullOrWhiteSpace(currentAttended))
+            {
+                return AttendanceUpdateResult.AlreadyAttended;
+            }
+
+            string updateQuery = @"
+                UPDATE Registration
+                SET Attended = @Attended
+                WHERE ID = @RegistrationID";
+
+            using SqlCommand updateCmd = new SqlCommand(updateQuery, con);
+            updateCmd.Parameters.AddWithValue("@Attended", attended);
+            updateCmd.Parameters.AddWithValue("@RegistrationID", registrationId);
+
+            updateCmd.ExecuteNonQuery();
+
+            return AttendanceUpdateResult.Success;
         }
     }
 }
