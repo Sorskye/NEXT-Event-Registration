@@ -1,4 +1,5 @@
 using DAL.Repositories.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using NERA.Models;
@@ -15,24 +16,34 @@ namespace NEXT.Pages.Events
         }
 
         [BindProperty]
-        public string Title { get; set; }
+        [Required(ErrorMessage = "Titel is verplicht.")]
+        [StringLength(100, ErrorMessage = "Titel mag maximaal 100 tekens zijn.")]
+        public string? Title { get; set; }
 
         [BindProperty]
-        public string Description { get; set; }
+        [Required(ErrorMessage = "Beschrijving is verplicht.")]
+        [StringLength(1000, ErrorMessage = "Beschrijving mag maximaal 1000 tekens zijn.")]
+        public string? Description { get; set; }
 
         [BindProperty]
-        public DateTime Date { get; set; }
+        [Required(ErrorMessage = "Datum is verplicht.")]
+        public DateTime? Date { get; set; }
 
         [BindProperty]
-        public string Location { get; set; }
+        [Required(ErrorMessage = "Locatie is verplicht.")]
+        [StringLength(100, ErrorMessage = "Locatie mag maximaal 100 tekens zijn.")]
+        public string? Location { get; set; }
 
         [BindProperty]
+        [Range(1, 200, ErrorMessage = "Max deelnemers moet minimaal 1 zijn.")]
         public int MaxParticipants { get; set; }
 
         [BindProperty]
+        [Range(0, 500, ErrorMessage = "Kosten mogen niet negatief zijn.")]
         public decimal? Cost { get; set; }
 
         [BindProperty]
+        [Range(0, 500, ErrorMessage = "Loterijprijs mag niet negatief zijn.")]
         public decimal? LotteryPrize { get; set; }
 
         [BindProperty]
@@ -47,7 +58,7 @@ namespace NEXT.Pages.Events
                 return RedirectToPage("/Home/Homepage");
             }
 
-            Date = DateTime.Now;
+            Date = DateTime.Now.AddHours(2);
             return Page();
         }
 
@@ -64,25 +75,53 @@ namespace NEXT.Pages.Events
                 return RedirectToPage("/Home/Homepage");
             }
 
+            DateTime minimumEventDate = DateTime.Now.AddHours(2);
+
+            if (Date.HasValue && Date.Value < minimumEventDate)
+            {
+                ModelState.AddModelError(nameof(Date), "Datum moet minimaal 2 uur vanaf nu zijn.");
+            }
+
             byte[]? photoBytes = null;
             if (ImageFile != null && ImageFile.Length > 0)
             {
                 if (ImageFile.Length > 5 * 1024 * 1024)
                 {
-                    ErrorMessage = "De afbeelding mag maximaal 5 MB zijn.";
+                    ModelState.AddModelError(nameof(ImageFile), "De afbeelding mag maximaal 5 MB zijn.");
                     return Page();
                 }
 
+                string[] allowedContentTypes = ["image/jpeg", "image/png", "image/webp"];
+                if (!allowedContentTypes.Contains(ImageFile.ContentType))
+                {
+                    ModelState.AddModelError(nameof(ImageFile), "Alleen JPG, PNG of WEBP bestanden zijn toegestaan.");
+                    return Page();
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            if (!Date.HasValue)
+            {
+                return Page();
+            }
+
+            DateTime eventDate = Date.Value;
+
+            if (ImageFile != null && ImageFile.Length > 0)
+            {
                 using MemoryStream memoryStream = new MemoryStream();
                 ImageFile.CopyTo(memoryStream);
                 photoBytes = memoryStream.ToArray();
             }
-
             _eventRepository.CreateEvent(new Event
             {
                 Name = Title,
                 Description = Description,
-                DateTime = Date,
+                DateTime_beginning = eventDate,
                 LocationName = Location,
                 Photo = photoBytes,
                 Cost = Cost,

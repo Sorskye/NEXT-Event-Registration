@@ -8,16 +8,13 @@ namespace DAL.Repositories.SqlServer
     {
         private readonly string connectionString;
         private readonly ILocationRepository locationRepository;
-        private readonly IEventRegistrationRepository registrationRepository;
 
         public SqlServerEventRepository(
             string connectionString,
-            ILocationRepository locationRepository,
-            IEventRegistrationRepository registrationRepository)
+            ILocationRepository locationRepository)
         {
             this.connectionString = connectionString;
             this.locationRepository = locationRepository;
-            this.registrationRepository = registrationRepository;
         }
 
         public Event GetEventById(int id)
@@ -35,10 +32,7 @@ namespace DAL.Repositories.SqlServer
                 return null;
             }
 
-            Event ev = SqlServerEventMapper.ReadEvent(dr);
-            ev.CurrentParticipants = registrationRepository.GetParticipantCountByEventId(id);
-
-            return ev;
+            return SqlServerEventMapper.ReadEvent(dr);
         }
 
         public List<Event> GetEventsByUser(int userId)
@@ -60,9 +54,7 @@ namespace DAL.Repositories.SqlServer
 
             while (dr.Read())
             {
-                Event ev = SqlServerEventMapper.ReadEvent(dr);
-                ev.CurrentParticipants = registrationRepository.GetParticipantCountByEventId(ev.Id);
-                events.Add(ev);
+                events.Add(SqlServerEventMapper.ReadEvent(dr));
             }
 
             return events;
@@ -96,7 +88,7 @@ namespace DAL.Repositories.SqlServer
                 cmd.Parameters.AddWithValue("@Name", (object?)ev.Name ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Description", (object?)ev.Description ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Photo", (object?)ev.Photo ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@DateTime", (object?)ev.DateTime ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@DateTime", (object?)ev.DateTime_beginning ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Cost", (object?)ev.Cost ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@MaxParticipants", (object?)ev.MaxParticipants ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@LotteryPrize", (object?)ev.LotteryPrize ?? DBNull.Value);

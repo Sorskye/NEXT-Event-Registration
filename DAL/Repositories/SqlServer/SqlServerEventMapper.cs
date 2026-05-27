@@ -18,7 +18,8 @@ namespace DAL.Repositories.SqlServer
                 e.Lottery_prize,
                 l.Name AS LocationName,
                 organizer.Name AS OrganizerName,
-                organizer.Email AS OrganizerEmail
+                organizer.Email AS OrganizerEmail,
+                (SELECT COUNT(*) FROM Registration_Event re_count WHERE re_count.EventID = e.ID) AS CurrentParticipants
             FROM Event e
             LEFT JOIN Location l ON e.LocationID = l.ID
             OUTER APPLY (
@@ -40,11 +41,12 @@ namespace DAL.Repositories.SqlServer
                 Name = reader["Name"] == DBNull.Value ? null : reader["Name"].ToString(),
                 Description = reader["Description"] == DBNull.Value ? null : reader["Description"].ToString(),
                 Photo = photo,
-                DateTime = reader["Date_time"] == DBNull.Value ? null : Convert.ToDateTime(reader["Date_time"]),
+                DateTime_beginning = reader["Date_time"] == DBNull.Value ? null : Convert.ToDateTime(reader["Date_time"]),
                 Cost = reader["Cost"] == DBNull.Value ? null : Convert.ToDecimal(reader["Cost"]),
                 MaxParticipants = reader["Max_participants"] == DBNull.Value ? null : Convert.ToInt32(reader["Max_participants"]),
                 LotteryPrize = reader["Lottery_prize"] == DBNull.Value ? null : Convert.ToDecimal(reader["Lottery_prize"]),
                 LocationName = reader["LocationName"] == DBNull.Value ? null : reader["LocationName"].ToString(),
+                CurrentParticipants = Convert.ToInt32(reader["CurrentParticipants"]),
                 Organizer = GetOrganizerDisplayName(reader),
                 ImageUrl = photo == null ? "/images/placeholder-image.png" : $"data:image/jpeg;base64,{Convert.ToBase64String(photo)}"
             };

@@ -25,8 +25,7 @@ builder.Services.AddScoped<ILocationRepository>(_ => new SqlServerLocationReposi
 builder.Services.AddScoped<IEventRegistrationRepository>(_ => new SqlServerEventRegistrationRepository(connectionString));
 builder.Services.AddScoped<IEventRepository>(serviceProvider => new SqlServerEventRepository(
     connectionString,
-    serviceProvider.GetRequiredService<ILocationRepository>(),
-    serviceProvider.GetRequiredService<IEventRegistrationRepository>()));
+    serviceProvider.GetRequiredService<ILocationRepository>()));
 builder.Services.AddScoped<IUserRepository>(_ => new SqlServerUserRepository(connectionString));
 
 var app = builder.Build();

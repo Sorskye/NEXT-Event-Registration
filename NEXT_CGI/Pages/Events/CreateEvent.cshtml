@@ -5,7 +5,6 @@
 }
 
 <div class="create-event-page">
-    <img src="/images/corner.png" class="corner-logo" />
 
     <div class="create-event-container">
         <div class="create-event-card">
@@ -16,7 +15,7 @@
                 </p>
             </div>
 
-            <form method="post" enctype="multipart/form-data" class="create-event-form">
+            <form method="post" enctype="multipart/form-data" class="create-event-form" novalidate>
                 @if (!string.IsNullOrEmpty(Model.ErrorMessage))
                 {
                     <p style="color:#b42318; margin-bottom: 16px;">@Model.ErrorMessage</p>
@@ -25,11 +24,13 @@
                 <div class="form-group">
                     <label asp-for="Title" class="form-label">Titel</label>
                     <input asp-for="Title" class="form-input" placeholder="Bijvoorbeeld: Summer Innovation Meetup" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label asp-for="Location" class="form-label">Locatie</label>
                     <input asp-for="Location" class="form-input" placeholder="Bijvoorbeeld: Eindhoven" />
+                    <span asp-validation-for="Location" class="text-danger"></span>
                 </div>
 
                 <div class="form-row">
@@ -38,25 +39,29 @@
                         <input asp-for="Date"
                                type="datetime-local"
                                class="form-input"
-                               min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"
-                               value="@Model.Date.ToString("yyyy-MM-ddTHH:mm")" />
+                               min="@DateTime.Now.AddHours(2).ToString("yyyy-MM-ddTHH:mm")"
+                               value="@(Model.Date?.ToString("yyyy-MM-ddTHH:mm") ?? DateTime.Now.AddHours(2).ToString("yyyy-MM-ddTHH:mm"))" />
+                        <span asp-validation-for="Date" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
                         <label asp-for="MaxParticipants" class="form-label">Max deelnemers</label>
-                        <input asp-for="MaxParticipants" class="form-input" placeholder="Bijvoorbeeld: 30" />
+                        <input asp-for="MaxParticipants" type="number" min="1" class="form-input" placeholder="Bijvoorbeeld: 30" data-msg-min="Max deelnemers moet minimaal 1 zijn." />
+                        <span asp-validation-for="MaxParticipants" class="text-danger"></span>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label asp-for="Cost" class="form-label">Kosten</label>
-                        <input asp-for="Cost" type="number" step="0.01" min="0" class="form-input" placeholder="Bijvoorbeeld: 7.50" />
+                        <input asp-for="Cost" type="number" step="0.01" min="0" class="form-input" placeholder="Bijvoorbeeld: 7.50" data-msg-min="Kosten mogen niet negatief zijn." />
+                        <span asp-validation-for="Cost" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
                         <label asp-for="LotteryPrize" class="form-label">Loterijprijs</label>
-                        <input asp-for="LotteryPrize" type="number" step="0.01" min="0" class="form-input" placeholder="Bijvoorbeeld: 50.00" />
+                        <input asp-for="LotteryPrize" type="number" step="0.01" min="0" class="form-input" placeholder="Bijvoorbeeld: 50.00" data-msg-min="Loterijprijs mag niet negatief zijn." />
+                        <span asp-validation-for="LotteryPrize" class="text-danger"></span>
                     </div>
                 </div>
 
@@ -85,11 +90,13 @@
                             <button type="button" id="removeImageBtn" class="upload-remove-btn">Verwijder</button>
                         </div>
                     </div>
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label asp-for="Description" class="form-label">Beschrijving</label>
                     <textarea asp-for="Description" class="form-textarea" rows="5" placeholder="Beschrijf hier het evenement..."></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
 
                 <div class="form-actions">
@@ -144,4 +151,5 @@
             imagePreview.src = defaultPreview;
         });
     </script>
+    <partial name="_ValidationScriptsPartial" />
 }
