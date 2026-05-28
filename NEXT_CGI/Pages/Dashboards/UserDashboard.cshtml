@@ -10,19 +10,21 @@
         @if (Model.RegisteredEvents != null && Model.RegisteredEvents.Any())
         {
             <section class="section-block">
-                <h2 class="section-title">Hier heb je je aangemeld voor</h2>
+                <h2 class="section-title">Hier heb je je voor aangemeld</h2>
 
                 <div class="row g-4">
-                    @foreach (var ev in Model.RegisteredEvents)
+                    @foreach (var ev in Model.UpcomingEvents)
                     {
                         <div class="col-md-6 col-lg-4">
                             <div class="card event-card">
                                 <img src="@ev.ImageUrl" class="event-image" alt="@ev.Title" />
 
                                 <div class="event-card-body">
-                                    <a asp-page="/Events/EventDetails" asp-route-id="@ev.Id" style="text-decoration:none; color:inherit;">
-                                        <h5 class="card-title">@ev.Title</h5>
-                                    </a>
+
+                                    <a asp-page="/Events/EventDetails"
+                                       asp-route-id="@ev.Id"
+                                       class="stretched-link"
+                                       aria-label="Bekijk @ev.Title"></a>
 
                                     <div class="event-meta">
                                         <p><strong>Locatie:</strong> @ev.Location</p>
@@ -31,10 +33,15 @@
                                     </div>
 
                                     <div class="event-actions">
-                                        <form method="post" asp-page-handler="Unregister">
-                                            <input type="hidden" name="id" value="@ev.Id" />
-                                            <button type="submit" class="btn btn-nera-secondary">Afmelden</button>
-                                        </form>
+
+                                        <div class="event-rapport">
+                                            <a asp-page="/Dashboards/Rapport"
+                                               asp-route-id="@ev.Id"
+                                               class="btn btn-nera-secondary">
+                                                Bekijk rapport
+                                            </a>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
