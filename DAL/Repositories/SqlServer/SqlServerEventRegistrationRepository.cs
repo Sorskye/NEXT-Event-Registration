@@ -262,7 +262,7 @@ namespace DAL.Repositories.SqlServer
 
             if (rowsAffected == 0)
             {
-                throw new Exception($"Geen Registration gevonden met ID {registrationId}");
+                Console.WriteLine("Geen registration gevonden.");
             }
         }
 

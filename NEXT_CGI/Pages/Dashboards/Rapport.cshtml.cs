@@ -75,8 +75,6 @@ namespace NEXT.Pages.Dashboards
             _eventregister.UpdateAttendance(RegistrationId, Attended);
 
             return RedirectToPage("/Dashboards/Rapport", new { id = EventId });
-
-            throw new Exception($"POST: EventId={EventId}, RegistrationId={RegistrationId}, Attended={Attended}");
            
         }
     }
