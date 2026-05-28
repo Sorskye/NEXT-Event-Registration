@@ -13,11 +13,12 @@ namespace NEXT.Pages.Dashboards
         private readonly IUserRepository _userRepository;
         
         public int TotalEvents { get; set; }
-        public string UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
         public bool IsAdmin { get; set; }
-        public List<Event> UserMadeEvents { get; set; }
-        public List<Event> RegisteredEvents { get; set; }
-        public List<Event> UpcomingEvents { get; set; }
+        public List<Event> UserMadeEvents { get; set; } = new();
+        public List<Event> RegisteredEvents { get; set; } = new();
+        public List<Event> UpcomingEvents { get; set; } = new();
+        public List<Event> EndedEvents => UserMadeEvents.Where(e => e.DateTime < System.DateTime.Now).ToList();
 
         
         public AdminDashboardModel(

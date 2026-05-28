@@ -19,8 +19,8 @@ namespace NEXT.Pages.Dashboards
 
         public bool IsAdmin { get; set; }
 
-        public List<Event> RegisteredEvents { get; set; }
-        public List<Event> UpcomingEvents { get; set; }
+        public List<Event> RegisteredEvents { get; set; } = new();
+        public List<Event> UpcomingEvents { get; set; } = new();
 
         public IActionResult OnGet()
         {

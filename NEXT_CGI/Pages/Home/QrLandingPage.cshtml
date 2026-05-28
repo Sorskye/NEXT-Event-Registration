@@ -2,31 +2,7 @@
 @page
 @model NEXT.Pages.Home.QrLandingPageModel
 @{
-<<<<<<< Updated upstream
-    <h1>Event check-in</h1>
-
-    @if (Model.EventItem != null)
-    {
-        <h2>@Model.EventItem.Name</h2>
-        <p>@Model.EventItem.Description</p>
-        <p>@Model.EventItem.DateTime</p>
-    }
-
-    @if (Model.IsSuccess)
-    {
-        <div style="color: green; font-weight: bold;">
-            @Model.Message
-        </div>
-    }
-    else
-    {
-        <div style="color: red; font-weight: bold;">
-            @Model.Message
-        </div>
-    }
-=======
     ViewData["Title"] = "QR Check-in";
->>>>>>> Stashed changes
 }
 
 <div class="qr-page">

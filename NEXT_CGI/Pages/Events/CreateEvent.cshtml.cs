@@ -15,16 +15,16 @@ namespace NEXT.Pages.Events
         }
 
         [BindProperty]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         [BindProperty]
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
 
         [BindProperty]
         public DateTime Date { get; set; }
 
         [BindProperty]
-        public string Location { get; set; }
+        public string Location { get; set; } = string.Empty;
 
         [BindProperty]
         public int MaxParticipants { get; set; }

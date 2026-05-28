@@ -9,7 +9,7 @@ namespace NEXT.Pages.Events
     {
         private readonly IEventRepository _eventRepository;
         private readonly IEventRegistrationRepository _eventRegistrationRepository;
-        public Event SelectedEvent { get; set; }
+        public Event? SelectedEvent { get; set; }
         public bool IsRegistered { get; set; }
 
         public EventDetailsModel(
