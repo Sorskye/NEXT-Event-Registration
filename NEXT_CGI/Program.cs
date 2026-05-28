@@ -3,6 +3,10 @@ using DAL.Repositories.SqlServer;
 using Auth0.AspNetCore.Authentication;
 using NEXT.wwwroot;
 
+using Auth0.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -16,9 +20,11 @@ builder.Services.AddAuth0WebAppAuthentication(options =>
     options.Domain = builder.Configuration["Auth0:Domain"];
     options.ClientId = builder.Configuration["Auth0:ClientId"];
     options.ClientSecret = builder.Configuration["Auth0:ClientSecret"];
+    
+    options.Scope = "openid profile email";
 });
 
-// connection string en repos
+// connection string
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is missing.");
 
@@ -55,10 +61,36 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseSession();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
+
+app.MapGet("/login", async (HttpContext httpContext, string? returnUrl = "/LoginRedirect") =>
+{
+    var authenticationProperties = new LoginAuthenticationPropertiesBuilder()
+        .WithRedirectUri(returnUrl)
+        .Build();
+
+    await httpContext.ChallengeAsync(
+        Auth0Constants.AuthenticationScheme,
+        authenticationProperties);
+});
+
+app.MapGet("/logout", async (HttpContext httpContext) =>
+{
+    var authenticationProperties = new LogoutAuthenticationPropertiesBuilder()
+        .WithRedirectUri("/")
+        .Build();
+
+    await httpContext.SignOutAsync(
+        Auth0Constants.AuthenticationScheme,
+        authenticationProperties);
+
+    await httpContext.SignOutAsync(
+        CookieAuthenticationDefaults.AuthenticationScheme);
+});
 
 app.Run();
