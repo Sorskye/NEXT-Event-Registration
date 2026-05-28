@@ -11,5 +11,10 @@ public interface IEventRegistrationRepository // Verantwoordelijk voor [REGISTRA
     List<Event> GetUpcomingEventsByUser(int userId);
     bool IsUserRegistered(int userId, int eventId);
     int GetParticipantCountByEventId(int eventId);
+<<<<<<< Updated upstream
     public AttendanceUpdateResult TryMarkAttendance(int userId, int eventId, string attended);
+=======
+    public SqlServerEventRegistrationRepository.AttendanceUpdateResult TryMarkAttendance(int userId, int eventId, bool attended);
+
+>>>>>>> Stashed changes
 }
