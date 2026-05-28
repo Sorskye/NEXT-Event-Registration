@@ -9,9 +9,7 @@ namespace DAL.Repositories.SqlServer
         private readonly string connectionString;
         private readonly ILocationRepository locationRepository;
 
-        public SqlServerEventRepository(
-            string connectionString,
-            ILocationRepository locationRepository)
+        public SqlServerEventRepository(string connectionString, ILocationRepository locationRepository)
         {
             this.connectionString = connectionString;
             this.locationRepository = locationRepository;

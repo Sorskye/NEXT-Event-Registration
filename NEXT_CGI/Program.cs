@@ -23,9 +23,7 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
 
 builder.Services.AddScoped<ILocationRepository>(_ => new SqlServerLocationRepository(connectionString));
 builder.Services.AddScoped<IEventRegistrationRepository>(_ => new SqlServerEventRegistrationRepository(connectionString));
-builder.Services.AddScoped<IEventRepository>(serviceProvider => new SqlServerEventRepository(
-    connectionString,
-    serviceProvider.GetRequiredService<ILocationRepository>()));
+builder.Services.AddScoped<IEventRepository>(serviceProvider => new SqlServerEventRepository(connectionString, serviceProvider.GetRequiredService<ILocationRepository>()));
 builder.Services.AddScoped<IUserRepository>(_ => new SqlServerUserRepository(connectionString));
 
 var app = builder.Build();
