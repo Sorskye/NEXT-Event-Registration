@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using DAL.Models;
+using Microsoft.AspNetCore.Authentication;
 
 namespace NEXT.Pages.Auth
 {
@@ -13,82 +14,81 @@ namespace NEXT.Pages.Auth
 
         public LoginRedirectModel(IUserRepository userRepository)
         {
-            this._userRepository = userRepository;
+            _userRepository = userRepository;
         }
 
         [BindProperty]
         public string? Email { get; set; }
+
         public string? Auth0Id { get; set; }
-        
+        public string? Message { get; set; }
 
-        public string? message { get; set; }
-
-        public IActionResult OnGet()
+        public IActionResult OnGet(int? eventId)
         {
-            message = "redirecting";
-            Console.WriteLine("redirecting..");
-            
-            // check if values are empty
-            if (HttpContext.Session.GetString("UserId") == null)
+            if (User.Identity?.IsAuthenticated != true)
             {
-                Email = User.FindFirst(ClaimTypes.Email)?.Value ?? User.FindFirst("email")?.Value;
-                Auth0Id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("sub")?.Value;
+                var returnUrl = Url.Page("/LoginRedirect", new { eventId });
+
+                return Challenge(new AuthenticationProperties
+                {
+                    RedirectUri = returnUrl
+                }, "Auth0"); 
             }
 
-            if (Email == null || Auth0Id == null)
+            Message = "redirecting";
+
+            Email = User.FindFirst(ClaimTypes.Email)?.Value
+                 ?? User.FindFirst("email")?.Value;
+
+            Auth0Id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                   ?? User.FindFirst("sub")?.Value;
+
+            if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Auth0Id))
             {
-                message = "Er is een fout opgetreden tijdens het achterhalen van jou account. Probeer het opnieuw. 'NO_DATA_FROM_AUTH_PROVIDER'";
+                Message = "Er is een fout opgetreden tijdens het ophalen van je accountgegevens.";
                 return Page();
             }
-            
-            Console.WriteLine(Email);
-            
+
             var user = _userRepository.GetUserByEmail(Email);
+
             if (user == null)
             {
-                message = "NO_DB_MATCH_FROM_AUTH_USER::" +Auth0Id;
-                User NewUser = new User();
-                NewUser.Name = "temp";
-                NewUser.Email = Email;
-                NewUser.Auth0Id = Auth0Id;
-                NewUser.Role = "member";
-                
-                bool success = _userRepository.CreateUser(NewUser);
-                if (success == false)
+                User newUser = new User
                 {
-                    if (Auth0Id == null)
-                    {
-                        Auth0Id = "?";}
+                    Name = "temp",
+                    Email = Email,
+                    Auth0Id = Auth0Id,
+                    Role = "member"
+                };
 
-                    if (user.Id == null)
-                    {
-                        user.Id = 0;
-                    }
-                    message = "ERROR::DB_RET_FALSE::AUTH0ID="+Auth0Id+"::USERID="+user.Id;
+                bool success = _userRepository.CreateUser(newUser);
+
+                if (!success)
+                {
+                    Message = "Gebruiker kon niet worden aangemaakt.";
                     return Page();
                 }
-                message = "OK";
-                
-                HttpContext.Session.SetInt32("UserId", user.Id);
-                HttpContext.Session.SetString("UserName", user.Name ?? user.Email ?? "Gebruiker");
-                HttpContext.Session.SetString("UserRole", user.IsAdmin ? "Admin" : "User");
-                // create user
-            }else
-            {
-                HttpContext.Session.SetInt32("UserId", user.Id);
-                HttpContext.Session.SetString("UserName", user.Name ?? user.Email ?? "Gebruiker");
-                HttpContext.Session.SetString("UserRole", user.IsAdmin ? "Admin" : "User");
+
+                user = _userRepository.GetUserByEmail(Email);
+
+                if (user == null)
+                {
+                    Message = "Gebruiker aangemaakt, maar niet teruggevonden.";
+                    return Page();
+                }
             }
 
+            HttpContext.Session.SetInt32("UserId", user.Id);
+            HttpContext.Session.SetString("UserName", user.Name ?? user.Email ?? "Gebruiker");
+            HttpContext.Session.SetString("UserRole", user.IsAdmin ? "Admin" : "User");
+
+            if (eventId.HasValue)
+            {
+                return RedirectToPage("/Home/QrLandingPage", new { eventId = eventId.Value });
+            }
 
             return RedirectToPage("/Home/Homepage");
-
-
-            return Page();
-            // if user is in database, set values and continue
-
-            // if user is not in database, create user, set values and continue
         }
-
     }
 }
+

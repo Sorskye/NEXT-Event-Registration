@@ -248,7 +248,7 @@ namespace DAL.Repositories.SqlServer
             cmd.ExecuteNonQuery();
         }
 
-        public AttendanceUpdateResult TryMarkAttendance(int userId, int eventId, string attended)
+        public AttendanceUpdateResult TryMarkAttendance(int userId, int eventId, bool attended)
         {
             using SqlConnection con = new SqlConnection(connectionString);
             con.Open();
@@ -273,13 +273,13 @@ namespace DAL.Repositories.SqlServer
             }
 
             int registrationId = Convert.ToInt32(reader["ID"]);
-            string? currentAttended = reader["Attended"] == DBNull.Value
+            bool? currentAttended = reader["Attended"] == DBNull.Value
                 ? null
-                : reader["Attended"].ToString();
+                : Convert.ToBoolean(reader["Attended"]);
 
             reader.Close();
 
-            if (!string.IsNullOrWhiteSpace(currentAttended))
+            if (currentAttended == true)
             {
                 return AttendanceUpdateResult.AlreadyAttended;
             }

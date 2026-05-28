@@ -30,34 +30,47 @@ namespace NEXT.Pages.Home
 
         public IActionResult OnGet(int? eventId)
         {
-            // Get the current user id from claims
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (!int.TryParse(userIdClaim, out var userId) || eventId == null)
+            if (eventId == null)
             {
-                Message = "Invalid request.";
+                Message = "Geen event geselecteerd.";
                 IsSuccess = false;
                 return Page();
-            }       
+            }
 
-            var result = _eventRegistrationRepository.TryMarkAttendance(userId, eventId.Value, "Present");
+            EventItem = _eventRepository.GetEventById(eventId.Value);
 
-        switch (result)
-        {
-            case AttendanceUpdateResult.Success:
-                Message = "Je aanwezigheid is bevestigd.";
-                IsSuccess = true;
-            break;
-
-            case AttendanceUpdateResult.NotRegistered:
-                Message = "Je bent niet aangemeld voor dit event.";
+            if (EventItem == null)
+            {
+                Message = "Event niet gevonden.";
                 IsSuccess = false;
-            break;
+                return Page();
+            }
 
-            case AttendanceUpdateResult.AlreadyAttended:
-                Message = "Je aanwezigheid was al eerder geregistreerd.";
-                IsSuccess = false;
-            break;
-        }
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToPage("/LoginRedirect", new { eventId = eventId.Value });
+            }
+
+            var result = _eventRegistrationRepository.TryMarkAttendance(userId.Value, eventId.Value, true);
+
+            switch (result)
+            {
+                case AttendanceUpdateResult.Success:
+                    Message = "Je aanwezigheid is bevestigd.";
+                    IsSuccess = true;
+                    break;
+
+                case AttendanceUpdateResult.NotRegistered:
+                    Message = "Je bent niet aangemeld voor dit event.";
+                    IsSuccess = false;
+                    break;
+
+                case AttendanceUpdateResult.AlreadyAttended:
+                    Message = "Je aanwezigheid was al eerder geregistreerd.";
+                    IsSuccess = false;
+                    break;
+            }
 
             return Page();
         }

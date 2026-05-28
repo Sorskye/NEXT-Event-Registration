@@ -1,0 +1,78 @@
+﻿@page "{id:int}"
+@model NEXT.Pages.Events.EventQrModel
+
+@{
+    ViewData["Title"] = "QR-code voor evenement";
+}
+
+<div class="container py-4">
+    @if (Model.EventItem != null)
+    {
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 rounded-4">
+                    <div class="card-body p-4 text-center">
+
+                        <h1 class="mb-3">QR-code voor evenement</h1>
+                        <h3 class="mb-4">@Model.EventItem.Title</h3>
+
+                        <div class="mb-3">
+                            <p class="mb-1">
+                                <strong>Locatie:</strong> @Model.EventItem.Location
+                            </p>
+                            <p class="mb-0">
+                                <strong>Datum:</strong>
+                                @Model.EventItem.Beginning_date?.ToString("dd-MM-yyyy")
+                                @Model.EventItem.Beginning_time?.ToString("HH:mm")
+                            </p>
+                        </div>
+
+                        <div class="my-4">
+                            <img src="/api/qrcode/event/@Model.EventItem.Id"
+                                 alt="QR-code voor @Model.EventItem.Title"
+                                 class="img-fluid border rounded-3 p-3 bg-white"
+                                 style="max-width: 350px;" />
+                        </div>
+
+                        <p class="text-muted mb-4">
+                            Laat bezoekers deze QR-code scannen om in te checken.
+                        </p>
+
+                        <a href="/api/qrcode/event/@Model.EventItem.Id"
+                           download="event-qr-@(Model.EventItem.Id).png"
+                           class="btn btn-primary">
+                            Download QR-code
+                        </a>
+
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    onclick="window.print()">
+                                Print
+                            </button>
+
+                            <a asp-page="/Dashboards/AdminDashboard"
+                               class="btn btn-secondary">
+                                Terug naar dashboard
+                            </a>
+                        </div>
+                        <div class="mb-4">
+    <p class="fw-semibold mb-2">Directe link:</p>
+    <a href="@Model.QrTargetUrl" target="_blank" rel="noopener noreferrer">
+        @Model.QrTargetUrl
+    </a>
+</div>
+                    </div>
+                </div>
+            </div>
+    }
+    else
+    {
+        <div class="alert alert-warning">
+            Evenement niet gevonden.
+        </div>
+
+        <a asp-page="/Dashboards/AdminDashboard" class="btn btn-secondary">
+            Terug naar dashboard
+        </a>
+    }
+</div>
