@@ -108,38 +108,24 @@
                             @foreach (var participant in Model.PresenceData.Participants)
                             {
                                 <tr class="align-middle">
-
                                     <!-- CHECKBOX -->
                                     <td>
 
-                                        <form method="post">
-
-                                            <!-- EventId behouden -->
+                                        <form method="post" asp-page="/Dashboards/Rapport">
                                             <input type="hidden"
-                                                   name="EventId"
+                                                   name="id"
                                                    value="@Model.EventId" />
 
-                                            <!-- Registration ID -->
                                             <input type="hidden"
                                                    name="RegistrationId"
                                                    value="@participant.Id" />
 
-                                            <!-- Nodig voor unchecked -->
-                                            <input type="hidden"
+                                            <input type="checkbox"
+                                                   class="form-check-input"
                                                    name="Attended"
-                                                   value="false" />
-
-                                            <div class="form-check">
-
-                                                <input class="form-check-input"
-                                                       type="checkbox"
-                                                       name="Attended"
-                                                       value="true"
-                                                       onchange="this.form.submit()"
-                                                @(participant.Attended ? "checked" : "")>
-
-                                            </div>
-
+                                                   value="true"
+                                                   onchange="this.form.submit()"
+                                            @(participant.Attended ? "checked" : "") />
                                         </form>
 
                                     </td>

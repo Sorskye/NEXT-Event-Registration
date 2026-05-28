@@ -246,7 +246,6 @@ namespace DAL.Repositories.SqlServer
         public void UpdateAttendance(int registrationId, bool attended)
         {
             using SqlConnection con = new SqlConnection(connectionString);
-
             con.Open();
 
             string query = @"
@@ -259,7 +258,12 @@ namespace DAL.Repositories.SqlServer
             cmd.Parameters.AddWithValue("@Attended", attended);
             cmd.Parameters.AddWithValue("@RegistrationID", registrationId);
 
-            cmd.ExecuteNonQuery();
+            int rowsAffected = cmd.ExecuteNonQuery();
+
+            if (rowsAffected == 0)
+            {
+                throw new Exception($"Geen Registration gevonden met ID {registrationId}");
+            }
         }
 
         public List<Registration> GetRegisteredByEventId(int eventId)
@@ -305,16 +309,11 @@ namespace DAL.Repositories.SqlServer
                 registrations.Add(new Registration
                 {
                     Id = Convert.ToInt32(dr["ID"]),
-
                     UserId = Convert.ToInt32(dr["UserID"]),
-
+                    EventId = eventId,
                     Name = dr["Name"].ToString(),
-
                     Email = dr["Email"].ToString(),
-
-                    RegistrationDate =
-                        Convert.ToDateTime(dr["Registration_date"]),
-
+                    RegistrationDate = Convert.ToDateTime(dr["Registration_date"]),
                     Attended = Convert.ToBoolean(dr["Attended"])
                 });
             }

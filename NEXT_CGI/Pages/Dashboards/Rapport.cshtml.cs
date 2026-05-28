@@ -18,8 +18,7 @@ namespace NEXT.Pages.Dashboards
             _eventregister = eventregister;
         }
 
-        [BindProperty(SupportsGet = true)]
-        [FromQuery(Name = "id")]
+        [BindProperty(SupportsGet = true, Name = "id")]
         public int EventId { get; set; }
 
 
@@ -71,12 +70,14 @@ namespace NEXT.Pages.Dashboards
 
         public IActionResult OnPost()
         {
-            _eventregister.UpdateAttendance(
-                RegistrationId,
-                Attended
-            );
+            Console.WriteLine($"RegistrationId: {RegistrationId}, Attended: {Attended}");
 
-            return RedirectToPage(new { EventId });
+            _eventregister.UpdateAttendance(RegistrationId, Attended);
+
+            return RedirectToPage("/Dashboards/Rapport", new { id = EventId });
+
+            throw new Exception($"POST: EventId={EventId}, RegistrationId={RegistrationId}, Attended={Attended}");
+           
         }
     }
 }
