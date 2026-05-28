@@ -17,5 +17,10 @@ namespace NEXT.Tests.Fakes
         {
             return IsAdminToReturn;
         }
+
+        public bool CreateUser(User user)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
