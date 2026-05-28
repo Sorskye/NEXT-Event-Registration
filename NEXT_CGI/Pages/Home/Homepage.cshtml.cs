@@ -20,9 +20,9 @@ namespace NEXT.Pages.Home
         }
 
         public bool IsAdmin { get; set; }
-        public string CurrentUserName { get; set; }
-        public List<Event> RegisteredEvents { get; set; }
-        public List<Event> UpcomingEvents { get; set; }
+        public string CurrentUserName { get; set; } = string.Empty;
+        public List<Event> RegisteredEvents { get; set; } = new();
+        public List<Event> UpcomingEvents { get; set; } = new();
 
         public IActionResult OnGet()
         {

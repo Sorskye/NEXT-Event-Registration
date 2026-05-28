@@ -1,5 +1,5 @@
-using DAL.Repositories.SqlServer;
 using NERA.Models;
+using static DAL.Repositories.SqlServer.SqlServerEventRegistrationRepository;
 
 namespace DAL.Repositories.Interfaces;
 
@@ -11,6 +11,5 @@ public interface IEventRegistrationRepository // Verantwoordelijk voor [REGISTRA
     List<Event> GetUpcomingEventsByUser(int userId);
     bool IsUserRegistered(int userId, int eventId);
     int GetParticipantCountByEventId(int eventId);
-    public SqlServerEventRegistrationRepository.AttendanceUpdateResult TryMarkAttendance(int userId, int eventId, string attended);
-
+    public AttendanceUpdateResult TryMarkAttendance(int userId, int eventId, bool attended);
 }

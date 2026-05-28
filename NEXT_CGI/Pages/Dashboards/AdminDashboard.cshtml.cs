@@ -13,23 +13,14 @@ namespace NEXT.Pages.Dashboards
         private readonly IUserRepository _userRepository;
         
         public int TotalEvents { get; set; }
-        public string UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
         public bool IsAdmin { get; set; }
-        public List<Event> UserMadeEvents { get; set; }
-        public List<Event> RegisteredEvents { get; set; }
-        public List<Event> UpcomingEvents { get; set; }
-        public List<Event> EndedEvents { get; set; }
-        public DateOnly? Beginning_date { get; set; }
+        public List<Event> UserMadeEvents { get; set; } = new();
+        public List<Event> RegisteredEvents { get; set; } = new();
+        public List<Event> UpcomingEvents { get; set; } = new();
+        public List<Event> EndedEvents => UserMadeEvents.Where(e => e.DateTime < System.DateTime.Now).ToList();
 
-        public DateOnly? Ending_date { get; set; }
-
-        public TimeOnly? Beginning_time { get; set; }
-
-        public TimeOnly? Ending_time { get; set; }
-
-
-
-
+        
         public AdminDashboardModel(
             IEventRepository eventRepository,
             IEventRegistrationRepository eventRegistrationRepository,
@@ -49,6 +40,8 @@ namespace NEXT.Pages.Dashboards
                 return RedirectToPage("/Home/Homepage");
             }
 
+            IsAdmin = true;
+
             int? currentUserId = HttpContext.Session.GetInt32("UserId");
             if (!currentUserId.HasValue)
             {
@@ -58,28 +51,10 @@ namespace NEXT.Pages.Dashboards
             UserName = HttpContext.Session.GetString("UserName");
 
             UserMadeEvents = _eventRepository.GetEventsByUser(currentUserId.Value);
+            RegisteredEvents = _eventRegistrationRepository.GetRegisteredEventsByUser(currentUserId.Value);
+            UpcomingEvents = _eventRegistrationRepository.GetUpcomingEventsByUser(currentUserId.Value);
 
-            UpcomingEvents = new List<Event>();
-            EndedEvents = new List<Event>();
-
-            foreach (var ev in UserMadeEvents)
-            {
-                ev.IsRegistered = _eventRegistrationRepository
-                    .IsUserRegistered(currentUserId.Value, ev.Id);
-
-                if (ev.Ending_date == null || ev.Ending_time == null)
-                {
-                    UpcomingEvents.Add(ev);
-                    continue;
-                }
-
-                var ending = ev.Ending_date.Value.ToDateTime(ev.Ending_time.Value);
-
-                if (ending > DateTime.Now)
-                    UpcomingEvents.Add(ev);
-                else
-                    EndedEvents.Add(ev);
-            }
+            IsAdmin = _userRepository.IsUserAdmin(currentUserId.Value);
 
             TotalEvents = UserMadeEvents.Count;
 
@@ -111,5 +86,6 @@ namespace NEXT.Pages.Dashboards
 
             return RedirectToPage();
         }
+        
     }
 }

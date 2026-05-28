@@ -44,6 +44,28 @@ namespace DAL.Repositories.SqlServer
             return null;
         }
 
+        public bool CreateUser(User user)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string query = @"INSERT INTO Users (Auth0_id, Name, Email, Role, Created_at)
+                                 VALUES (@Auth0Id, @Name, @Email, @Role, @CreatedAt)";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Auth0Id", (object?)user.Auth0Id ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Name", (object?)user.Name ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Email", (object?)user.Email ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Role", user.Role);
+                    cmd.Parameters.AddWithValue("@CreatedAt", DateTime.UtcNow);
+
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
         public bool IsUserAdmin(int userId)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))

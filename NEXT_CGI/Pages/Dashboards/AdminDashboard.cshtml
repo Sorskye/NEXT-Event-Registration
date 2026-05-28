@@ -1,53 +1,64 @@
 ﻿@page
 @model NEXT.Pages.Dashboards.AdminDashboardModel
-
 @{
     ViewData["Title"] = "AdminDashboard";
 }
 
-<div class="dashboard-header">
-    <div>
-        <p class="dashboard-greeting">Welkom terug,</p>
-        <h1 class="dashboard-name">@Model.UserName </h1>
-    </div>
-    <a asp-page="/Events/CreateEvent" class="btn btn-nera-primary dashboard-new-btn">
-        + Nieuw evenement
-    </a>
-</div>
+<br></br>
+<h2>Hallo, @Model.UserName</h2>
+<br></br>
+=======
+<a asp-page="/Events/CreateEvent" class="btn btn-create-event">
+    Nieuw evenement aanmaken
+</a>
 
+<h2 class="section-title">Hallo, @Model.UserName</h2>
+<br>
+>>>>>>> Stashed changes
 
 <div class="homepage-wrapper">
     <div class="homepage-container">
 
+        <a asp-page="/Events/CreateEvent" class="btn btn-nera-primary">
+            Nieuw evenement aanmaken
+        </a>
+ 
         <section class="section-block">
-            <h2 class="section-title">Jouw komende evenementen:</h2>
+            <h2 class="section-title">Jou evenementen:</h2>
         </section>
 
-        @if (Model.UpcomingEvents != null && Model.UpcomingEvents.Any())
+        @if (Model.UserMadeEvents != null && Model.UserMadeEvents.Any())
         {
             <section class="section-block">
+
                 <div class="row g-4">
-                    @foreach (var ev in Model.UpcomingEvents)
+                    @foreach (var ev in Model.UserMadeEvents)
                     {
                         <div class="col-md-6 col-lg-4">
                             <div class="card event-card">
-                                <img src="@ev.ImageUrl" class="event-image" alt="@ev.Title" />
+                                <img src="@ev.ImageUrl" class="event-image" alt="@ev.Title"/>
 
                                 <div class="event-card-body">
-
-                                    <a asp-page="/Events/EventDetails"
-                                       asp-route-id="@ev.Id"
-                                       class="stretched-link"
-                                       aria-label="Bekijk @ev.Title"></a>
+                                    <a asp-page="/EventDetails" asp-route-id="@ev.Id"
+                                       style="text-decoration:none; color:inherit;">
+                                        <h5 class="card-title">@ev.Title</h5>
+                                    </a>
 
                                     <div class="event-meta">
                                         <p><strong>Locatie:</strong> @ev.Location</p>
-                                        <p><strong>Datum:</strong> @ev.Beginning_date?.ToString("dd-MM-yyyy") @ev.Beginning_time?.ToString("HH:mm")</p>
+                                        <p><strong>Datum:</strong> @ev.Date.ToString("dd-MM-yyyy HH:mm")</p>
                                         <p><strong>Organizer:</strong> @ev.Organizer</p>
                                     </div>
 
                                     <div class="event-actions">
-
+                                        <form method="post" asp-page-handler="Unregister">
+                                            <input type="hidden" name="id" value="@ev.Id"/>
+                                            <button type="submit" class="btn btn-nera-secondary">Afmelden</button>
+                                        </form>
+                                    </div>
+                                    <div class="event-card">
+                                        <img src="/api/qrcode/event/@ev.Id" alt="QR-code voor @ev.Name" width="200" height="200" />
+=======
                                         <div class="event-rapport">
                                             <a asp-page="/Dashboards/Rapport"
                                                asp-route-id="@ev.Id"
@@ -56,7 +67,16 @@
                                             </a>
                                         </div>
 
+                                        <div class="event-qr">
+                                            <a asp-page="/Events/EventQr"
+                                               asp-route-id="@ev.Id"
+                                               class="btn btn-nera-secondary">
+                                                Toon QR-code
+                                            </a>
+                                        </div>
+
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -95,8 +115,7 @@
                                         <p><strong>Locatie:</strong> @ev.Location</p>
                                         <p>
                                             <strong>Datum:</strong>
-                                            @ev.Beginning_date?.ToString("dd-MM-yyyy")
-                                            @ev.Beginning_time?.ToString("HH:mm")
+                                            @ev.DateTime?.ToString("dd-MM-yyyy HH:mm")
                                         </p>
                                         <p><strong>Organizer:</strong> @ev.Organizer</p>
                                     </div>
@@ -109,9 +128,14 @@
                                                 Bekijk rapport
                                             </a>
                                         </div>
-                                    </div>
-                                    <div class="event-card">
-                                        <img src="/api/qrcode/event/@ev.Id" alt="QR-code voor @ev.Name" width="200" height="200" />
+
+                                        <div class="event-qr">
+                                            <a asp-page="/Events/EventQr"
+                                               asp-route-id="@ev.Id"
+                                               class="btn btn-nera-secondary">
+                                                Toon QR-code
+                                            </a>
+                                        </div>
                                     </div>
 
                                 </div>

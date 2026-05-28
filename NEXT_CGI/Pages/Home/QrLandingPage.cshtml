@@ -1,25 +1,156 @@
-﻿@page
+﻿
+@page
 @model NEXT.Pages.Home.QrLandingPageModel
 @{
-    <h1>Event check-in</h1>
-
-    @if (Model.EventItem != null)
-    {
-        <h2>@Model.EventItem.Name</h2>
-        <p>@Model.EventItem.Description</p>
-        <p>@Model.EventItem.Beginning_date</p>
-    }
-
-    @if (Model.IsSuccess)
-    {
-        <div style="color: green; font-weight: bold;">
-            @Model.Message
-        </div>
-    }
-    else
-    {
-        <div style="color: red; font-weight: bold;">
-            @Model.Message
-        </div>
-    }
+    ViewData["Title"] = "QR Check-in";
 }
+
+<div class="qr-page">
+    <div class="qr-card @(Model.IsSuccess ? "success" : "error")">
+        <div class="status-icon">
+            @if (Model.IsSuccess)
+            {
+                <span>✓</span>
+            }
+            else
+            {
+                <span>!</span>
+            }
+        </div>
+
+        <h1 class="title">
+            @(Model.IsSuccess ? "Aanwezigheid bevestigd" : "Check-in niet gelukt")
+        </h1>
+
+        @if (Model.EventItem != null)
+        {
+            <div class="event-box">
+                <h2>@Model.EventItem.Name</h2>
+
+                @if (Model.EventItem.Date != default)
+                {
+                    <p><strong>Datum:</strong> @Model.EventItem.Date.ToString("dd-MM-yyyy HH:mm")</p>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(Model.EventItem.Location))
+                {
+                    <p><strong>Locatie:</strong> @Model.EventItem.Location</p>
+                }
+            </div>
+        }
+
+        <p class="message">@Model.Message</p>
+
+        <div class="actions">
+            <a asp-page="/Home/Homepage" class="btn btn-primary">Naar home</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .qr-page {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f4f7fb, #e9eef7);
+        padding: 24px;
+    }
+
+    .qr-card {
+        width: 100%;
+        max-width: 560px;
+        background: #fff;
+        border-radius: 20px;
+        padding: 32px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.10);
+        text-align: center;
+        border-top: 8px solid #ccc;
+    }
+
+    .qr-card.success {
+        border-top-color: #22c55e;
+    }
+
+    .qr-card.error {
+        border-top-color: #ef4444;
+    }
+
+    .status-icon {
+        width: 82px;
+        height: 82px;
+        margin: 0 auto 20px auto;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        font-weight: bold;
+        color: white;
+    }
+
+    .qr-card.success .status-icon {
+        background: #22c55e;
+    }
+
+    .qr-card.error .status-icon {
+        background: #ef4444;
+    }
+
+    .title {
+        margin-bottom: 20px;
+        font-size: 30px;
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .event-box {
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 18px;
+        margin: 20px 0;
+        text-align: left;
+    }
+
+    .event-box h2 {
+        margin-top: 0;
+        margin-bottom: 12px;
+        color: #111827;
+        font-size: 22px;
+    }
+
+    .event-box p {
+        margin: 6px 0;
+        color: #374151;
+    }
+
+    .message {
+        margin: 20px 0 26px 0;
+        font-size: 18px;
+        color: #374151;
+    }
+
+    .actions {
+        margin-top: 10px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 12px 22px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.2s ease;
+    }
+
+    .btn-primary {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #1d4ed8;
+        color: white;
+    }
+</style>
