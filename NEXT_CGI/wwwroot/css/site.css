@@ -4,6 +4,45 @@ html {
     min-height: 100%;
 }
 
+/* Locatie autocomplete */
+.location-wrapper {
+    position: relative;
+    z-index: 100;
+}
+
+.location-suggestions {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 9999;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 100%;
+    max-height: 220px;
+    overflow-y: auto;
+    list-style: none;
+    margin-top: 4px;
+    padding: 0;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.location-suggestions li {
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 14px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.location-suggestions li:hover {
+    background: #f5f0ff;
+}
+
+.location-suggestions li:last-child {
+    border-bottom: none;
+}
+
 @media (min-width: 768px) {
     html {
         font-size: 16px;
