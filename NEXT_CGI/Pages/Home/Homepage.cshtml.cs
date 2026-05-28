@@ -10,11 +10,13 @@ namespace NEXT.Pages.Home
     {
         private readonly IEventRegistrationRepository _eventRegistrationRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IEventRepository _eventRepository;
 
-        public HomepageModel(IEventRegistrationRepository eventRegistrationRepository, IUserRepository userRepository)
+        public HomepageModel(IEventRegistrationRepository eventRegistrationRepository, IUserRepository userRepository, IEventRepository eventRepository)
         {
             this._eventRegistrationRepository = eventRegistrationRepository;
             this._userRepository = userRepository;
+            this._eventRepository = eventRepository;
         }
 
         public bool IsAdmin { get; set; }
@@ -72,6 +74,17 @@ namespace NEXT.Pages.Home
             if (!currentUserId.HasValue)
             {
                 return RedirectToPage("/Auth/Login");
+            }
+
+            var ev = _eventRepository.GetEventById(id);
+
+            if (ev != null && ev.Beginning_date.HasValue && ev.Beginning_time.HasValue)
+            {
+                var beginDateTime = ev.Beginning_date.Value.ToDateTime(ev.Beginning_time.Value);
+                if (beginDateTime < DateTime.Now)
+                {
+                    return RedirectToPage();
+                }
             }
 
             _eventRegistrationRepository.RegisterUserForEvent(currentUserId.Value, id);
