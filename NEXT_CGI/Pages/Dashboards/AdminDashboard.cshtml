@@ -5,12 +5,15 @@
     ViewData["Title"] = "AdminDashboard";
 }
 
-<a asp-page="/Events/CreateEvent" class="btn btn-create-event">
-    Nieuw evenement aanmaken
-</a>
-
-    <h2 class="section-title">Hallo, @Model.UserName</h2>
-    <br>
+<div class="dashboard-header">
+    <div>
+        <p class="dashboard-greeting">Welkom terug,</p>
+        <h1 class="dashboard-name">@Model.UserName </h1>
+    </div>
+    <a asp-page="/Events/CreateEvent" class="btn btn-nera-primary dashboard-new-btn">
+        + Nieuw evenement
+    </a>
+</div>
 
 
 <div class="homepage-wrapper">

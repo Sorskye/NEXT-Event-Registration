@@ -4,45 +4,6 @@ html {
     min-height: 100%;
 }
 
-/* Locatie autocomplete */
-.location-wrapper {
-    position: relative;
-    z-index: 100;
-}
-
-.location-suggestions {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 9999;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    width: 100%;
-    max-height: 220px;
-    overflow-y: auto;
-    list-style: none;
-    margin-top: 4px;
-    padding: 0;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-}
-
-.location-suggestions li {
-    padding: 10px 14px;
-    cursor: pointer;
-    font-size: 14px;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.location-suggestions li:hover {
-    background: #f5f0ff;
-}
-
-.location-suggestions li:last-child {
-    border-bottom: none;
-}
-
 @media (min-width: 768px) {
     html {
         font-size: 16px;
@@ -308,16 +269,38 @@ body {
     min-width: 220px;
 }
 
-.btn-create-event
-{
-    background: linear-gradient(135deg, #8B2E4B, #5b3cc4);
-    color: white;
-    border: none;
-    border-radius: 999px;
-    padding: 12px 18px;
-    font-weight: 700;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    float: right;
+/* Dashboard header */
+.dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 24px;
+    margin-bottom: 36px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.dashboard-greeting {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: #9ca3af;
+    margin-bottom: 2px;
+    letter-spacing: 0.02em;
+}
+
+.dashboard-name {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 0;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.dashboard-new-btn {
+    width: auto;
+    min-width: 180px;
+    white-space: nowrap;
 }
 
 
@@ -690,6 +673,45 @@ body {
     font-size: 0.92rem;
     cursor: pointer;
     transition: background 0.2s ease, transform 0.2s ease;
+}
+
+/* Locatie autocomplete */
+.location-wrapper {
+    position: relative;
+    z-index: 100;
+}
+
+.location-suggestions {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 9999;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 100%;
+    max-height: 220px;
+    overflow-y: auto;
+    list-style: none;
+    margin-top: 4px;
+    padding: 0;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.location-suggestions li {
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 14px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.location-suggestions li:hover {
+    background: #f5f0ff;
+}
+
+.location-suggestions li:last-child {
+    border-bottom: none;
 }
 
     .upload-remove-btn:hover {
