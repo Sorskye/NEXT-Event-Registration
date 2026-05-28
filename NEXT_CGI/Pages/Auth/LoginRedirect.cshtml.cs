@@ -52,7 +52,21 @@ namespace NEXT.Pages.Auth
                 NewUser.Email = Email;
                 NewUser.Auth0Id = Auth0Id;
                 NewUser.Role = "member";
+                
                 bool success = _userRepository.CreateUser(NewUser);
+                if (success == false)
+                {
+                    if (Auth0Id == null)
+                    {
+                        Auth0Id = "?";}
+
+                    if (user.Id == null)
+                    {
+                        user.Id = 0;
+                    }
+                    message = "ERROR::DB_RET_FALSE::AUTH0ID="+Auth0Id+"::USERID="+user.Id;
+                    return Page();
+                }
                 message = "OK";
                 
                 HttpContext.Session.SetInt32("UserId", user.Id);

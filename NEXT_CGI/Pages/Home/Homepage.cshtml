@@ -9,7 +9,7 @@
         @if (Model.RegisteredEvents != null && Model.RegisteredEvents.Any())
         {
             <section class="section-block">
-                <h2 class="section-title">Hier heb je je aangemeld voor</h2>
+                <h2 class="section-title">Hier heb je je voor aangemeld</h2>
 
                 <div class="row g-4">
                     @foreach (var ev in Model.RegisteredEvents)
@@ -43,7 +43,7 @@
         }
 
         <section class="section-block">
-            <h2 class="section-title">Komende evenementen</h2>
+            <h2 class="section-title">Aankomende evenementen</h2>
 
             @if (Model.UpcomingEvents == null || !Model.UpcomingEvents.Any())
             {
