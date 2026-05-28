@@ -69,10 +69,21 @@
                                     </div>
 
                                     <div class="event-actions">
-                                        <form method="post" asp-page-handler="Register">
-                                            <input type="hidden" name="id" value="@ev.Id"/>
-                                            <button type="submit" class="btn btn-nera-primary">Meld aan</button>
-                                        </form>
+                                        @{
+                                            var isExpired = ev.Beginning_date.HasValue && ev.Beginning_time.HasValue &&
+                                                            ev.Beginning_date.Value.ToDateTime(ev.Beginning_time.Value) < DateTime.Now;
+                                        }
+                                        @if (isExpired)
+                                        {
+                                            <button class="btn btn-nera-secondary" disabled>Verlopen</button>
+                                        }
+                                        else
+                                        {
+                                            <form method="post" asp-page-handler="Register">
+                                                <input type="hidden" name="id" value="@ev.Id"/>
+                                                <button type="submit" class="btn btn-nera-primary">Meld aan</button>
+                                            </form>
+                                        }
                                     </div>
                                 </div>
                             </div>
