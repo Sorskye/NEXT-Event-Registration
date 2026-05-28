@@ -21,6 +21,7 @@ namespace NEXT.Pages.Auth
 
         public void OnGet()
         {
+            
         }
 
         public IActionResult OnPost()
