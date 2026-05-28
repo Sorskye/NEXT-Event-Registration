@@ -7,7 +7,7 @@ namespace NEXT.Pages.Home
     {
         public IActionResult OnGet()
         {
-            return RedirectToPage("/Auth/Login");
+            return RedirectToPage("/Auth/Welcome");
         }
     }
 }

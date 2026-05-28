@@ -30,7 +30,7 @@ namespace DAL.Repositories.SqlServer
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Email", email.Trim());
-
+                    Console.WriteLine(email.Trim());
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
@@ -79,6 +79,30 @@ namespace DAL.Repositories.SqlServer
                 Role = reader["Role"] == DBNull.Value ? "member" : reader["Role"].ToString() ?? "member",
                 CreatedAt = reader["Created_at"] == DBNull.Value ? null : Convert.ToDateTime(reader["Created_at"])
             };
+        }
+
+        public bool CreateUser(User user)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string query = "INSERT INTO Users (Auth0_id,Name,Email,Role,Created_at) VALUES (@Auth0_id ,@Name ,@Email,@Role, @Date);";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Auth0_id", user.Auth0Id);
+                    cmd.Parameters.AddWithValue("@Name", user.Name);
+                    cmd.Parameters.AddWithValue("@Email", user.Email);
+                    cmd.Parameters.AddWithValue("@Role", user.Role);
+                    cmd.Parameters.AddWithValue("@Date", DateTime.Now);
+
+                    int rowsAffected = cmd.ExecuteNonQuery();
+
+                    return rowsAffected > 0;
+                }
+            }
+            
         }
     }
 }
