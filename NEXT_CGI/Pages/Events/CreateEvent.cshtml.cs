@@ -21,7 +21,16 @@ namespace NEXT.Pages.Events
         public string Description { get; set; } = string.Empty;
 
         [BindProperty]
-        public DateTime Date { get; set; }
+        public DateOnly? Beginning_date { get; set; }
+
+        [BindProperty]
+        public DateOnly? Ending_date { get; set; }
+
+        [BindProperty]
+        public TimeOnly? Beginning_time { get; set; }
+
+        [BindProperty]
+        public TimeOnly? Ending_time { get; set; }
 
         [BindProperty]
         public string Location { get; set; } = string.Empty;
@@ -47,7 +56,7 @@ namespace NEXT.Pages.Events
                 return RedirectToPage("/Home/Homepage");
             }
 
-            Date = DateTime.Now;
+            Beginning_date = DateOnly.FromDateTime(DateTime.Now);
             return Page();
         }
 
@@ -82,7 +91,10 @@ namespace NEXT.Pages.Events
             {
                 Name = Title,
                 Description = Description,
-                DateTime = Date,
+                Beginning_date = Beginning_date,
+                Ending_date = Ending_date,
+                Beginning_time = Beginning_time,
+                Ending_time = Ending_time,
                 LocationName = Location,
                 Photo = photoBytes,
                 Cost = Cost,

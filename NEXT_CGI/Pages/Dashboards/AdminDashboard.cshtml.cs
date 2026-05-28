@@ -18,7 +18,10 @@ namespace NEXT.Pages.Dashboards
         public List<Event> UserMadeEvents { get; set; } = new();
         public List<Event> RegisteredEvents { get; set; } = new();
         public List<Event> UpcomingEvents { get; set; } = new();
-        public List<Event> EndedEvents => UserMadeEvents.Where(e => e.DateTime < System.DateTime.Now).ToList();
+        public List<Event> EndedEvents => UserMadeEvents
+            .Where(e => e.Beginning_date.HasValue && e.Beginning_time.HasValue &&
+                        e.Beginning_date.Value.ToDateTime(e.Beginning_time.Value) < System.DateTime.Now)
+            .ToList();
 
         
         public AdminDashboardModel(

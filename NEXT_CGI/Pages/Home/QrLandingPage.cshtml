@@ -27,9 +27,9 @@
             <div class="event-box">
                 <h2>@Model.EventItem.Name</h2>
 
-                @if (Model.EventItem.Date != default)
+                @if (Model.EventItem.Beginning_date != null)
                 {
-                    <p><strong>Datum:</strong> @Model.EventItem.Date.ToString("dd-MM-yyyy HH:mm")</p>
+                    <p><strong>Datum:</strong> @Model.EventItem.Beginning_date?.ToString("dd-MM-yyyy") @Model.EventItem.Beginning_time?.ToString("HH:mm")</p>
                 }
 
                 @if (!string.IsNullOrWhiteSpace(Model.EventItem.Location))

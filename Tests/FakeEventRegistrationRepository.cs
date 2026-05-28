@@ -1,4 +1,5 @@
-﻿using DAL.Repositories.Interfaces;
+﻿using DAL.Models;
+using DAL.Repositories.Interfaces;
 using DAL.Repositories.SqlServer;
 using NERA.Models;
 
@@ -53,7 +54,17 @@ namespace NEXT.Tests.Fakes
             return ParticipantCountToReturn;
         }
 
-        public SqlServerEventRegistrationRepository.AttendanceUpdateResult TryMarkAttendance(int userId, int eventId, string attended)
+        public void UpdateAttendance(int registrationId, bool attended)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Registration> GetRegisteredByEventId(int eventId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SqlServerEventRegistrationRepository TryMarkAttendance(int userId, int eventId, string attended)
         {
             throw new NotImplementedException();
         }

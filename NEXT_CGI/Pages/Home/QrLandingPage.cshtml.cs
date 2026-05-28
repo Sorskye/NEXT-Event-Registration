@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using NERA.Models;
 using System.Security.Claims;
-using static DAL.Repositories.SqlServer.SqlServerEventRegistrationRepository;
+using DAL.Models;
 
 namespace NEXT.Pages.Home
 {
@@ -43,24 +43,26 @@ namespace NEXT.Pages.Home
                 return RedirectToPage("/LoginRedirect", new { eventId = eventId.Value });
             }
 
-            var result = _eventRegistrationRepository.TryMarkAttendance(userId.Value, eventId.Value, true);
+            EventItem = _eventRepository.GetEventById(eventId.Value);
 
-            switch (result)
+            var registrations = _eventRegistrationRepository.GetRegisteredByEventId(eventId.Value);
+            var userRegistration = registrations.FirstOrDefault(r => r.UserId == userId.Value);
+
+            if (userRegistration == null)
             {
-                case AttendanceUpdateResult.Success:
-                    Message = "Je aanwezigheid is bevestigd.";
-                    IsSuccess = true;
-                    break;
-
-                case AttendanceUpdateResult.NotRegistered:
-                    Message = "Je bent niet aangemeld voor dit event.";
-                    IsSuccess = false;
-                    break;
-
-                case AttendanceUpdateResult.AlreadyAttended:
-                    Message = "Je aanwezigheid was al eerder geregistreerd.";
-                    IsSuccess = false;
-                    break;
+                Message = "Je bent niet aangemeld voor dit event.";
+                IsSuccess = false;
+            }
+            else if (userRegistration.Attended)
+            {
+                Message = "Je aanwezigheid was al eerder geregistreerd.";
+                IsSuccess = false;
+            }
+            else
+            {
+                _eventRegistrationRepository.UpdateAttendance(userRegistration.Id, true);
+                Message = "Je aanwezigheid is bevestigd.";
+                IsSuccess = true;
             }
 
             return Page();

@@ -7,7 +7,4 @@ public interface IUserRepository // Verantwoordelijk voor [GEBRUIKERS] vinden bi
     User GetUserByEmail(string email);
     bool CreateUser(User user);
     bool IsUserAdmin(int userId);
-    
-    
-    bool CreateUser(User user);
 }
