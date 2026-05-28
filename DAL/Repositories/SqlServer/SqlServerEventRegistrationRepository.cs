@@ -267,25 +267,58 @@ namespace DAL.Repositories.SqlServer
             List<Registration> registrations = new List<Registration>();
 
             using SqlConnection con = new SqlConnection(connectionString);
+
             con.Open();
+
             string sqlQuery = @"
-                SELECT r.ID, r.Attended, ru.UserID
+                SELECT 
+                    r.ID,
+                    r.Attended,
+                    r.Registration_date,
+
+                    ru.UserID,
+
+                    u.Name,
+                    u.Email
+
                 FROM Registration r
-                INNER JOIN Registration_Event re ON r.ID = re.RegistrationID
-                INNER JOIN Registration_User ru ON r.ID = ru.RegistrationID
+
+                INNER JOIN Registration_Event re 
+                    ON r.ID = re.RegistrationID
+
+                INNER JOIN Registration_User ru 
+                    ON r.ID = ru.RegistrationID
+
+                INNER JOIN Users u
+                    ON ru.UserID = u.ID
+
                 WHERE re.EventID = @EventID";
+
             using SqlCommand cmd = new SqlCommand(sqlQuery, con);
+
             cmd.Parameters.AddWithValue("@EventID", eventId);
+
             using SqlDataReader dr = cmd.ExecuteReader();
+
             while (dr.Read())
             {
                 registrations.Add(new Registration
                 {
                     Id = Convert.ToInt32(dr["ID"]),
-                    Attended = Convert.ToBoolean(dr["Attended"]),
-                    UserId = Convert.ToInt32(dr["UserID"])
+
+                    UserId = Convert.ToInt32(dr["UserID"]),
+
+                    Name = dr["Name"].ToString(),
+
+                    Email = dr["Email"].ToString(),
+
+                    RegistrationDate =
+                        Convert.ToDateTime(dr["Registration_date"]),
+
+                    Attended = Convert.ToBoolean(dr["Attended"])
                 });
             }
+
             return registrations;
         }
     }

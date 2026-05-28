@@ -50,81 +50,158 @@
 
     <!-- Participant Table -->
     <div class="card border-0 shadow-sm">
+
         <div class="card-header bg-white py-3">
-            <h5 class="mb-0">Participant list for @Model.PresenceData.EventName</h5>
+            <h5 class="mb-0">
+                Participant list for @Model.PresenceData.EventName
+            </h5>
         </div>
+
         <div class="card-body p-0">
-            @if (Model.PresenceData?.Participants == null || !Model.PresenceData.Participants.Any())
+
+            @if (Model.PresenceData?.Participants == null ||
+                 !Model.PresenceData.Participants.Any())
             {
                 <div class="p-4 text-center text-muted">
+
                     <i class="fas fa-user-slash fa-2x mb-2"></i>
-                    <div class="fw-semibold">Er heeft zich nog niemand aangemeld voor dit event.</div>
-                    <div class="small">Geen deelnemers gevonden voor @Model.PresenceData?.EventName</div>
+
+                    <div class="fw-semibold">
+                        Er heeft zich nog niemand aangemeld voor dit event.
+                    </div>
+
+                    <div class="small">
+                        Geen deelnemers gevonden voor
+                        @Model.PresenceData?.EventName
+                    </div>
+
                 </div>
             }
             else
             {
                 <div class="table-responsive">
+
                     <table class="table table-hover mb-0">
+
                         <thead class="table-light">
                             <tr>
-                                <th style="width: 50px"></th>
+                                <th style="width: 70px"></th>
                                 <th>Name</th>
                                 <th>E-mailaddress</th>
                                 <th>Registered at</th>
-                                <th style="width: 120px"></th>
+                                <th style="width: 120px">Status</th>
                             </tr>
                         </thead>
+
                         <tbody>
+
                             @foreach (var participant in Model.PresenceData.Participants)
                             {
                                 <tr class="align-middle">
+
+                                    <!-- CHECKBOX -->
                                     <td>
-                                        <div class="form-check">
-                                            <input class="form-check-input presence-checkbox"
-                                                   type="checkbox"
-                                                   data-registration-id="@participant.RegistrationId"
-                                            @(participant.Attended ? "checked" : "")>
-                                        </div>
+
+                                        <form method="post">
+
+                                            <!-- EventId behouden -->
+                                            <input type="hidden"
+                                                   name="EventId"
+                                                   value="@Model.EventId" />
+
+                                            <!-- Registration ID -->
+                                            <input type="hidden"
+                                                   name="RegistrationId"
+                                                   value="@participant.Id" />
+
+                                            <!-- Nodig voor unchecked -->
+                                            <input type="hidden"
+                                                   name="Attended"
+                                                   value="false" />
+
+                                            <div class="form-check">
+
+                                                <input class="form-check-input"
+                                                       type="checkbox"
+                                                       name="Attended"
+                                                       value="true"
+                                                       onchange="this.form.submit()"
+                                                @(participant.Attended ? "checked" : "")>
+
+                                            </div>
+
+                                        </form>
+
                                     </td>
+
+                                    <!-- NAME -->
                                     <td>
+
                                         <div class="d-flex align-items-center">
+
                                             <div class="me-3">
                                                 <i class="bi bi-person-circle fs-4 text-muted"></i>
                                             </div>
+
                                             <div>
-                                                <div class="fw-semibold">@participant.Name</div>
-                                                <div class="text-muted small">@participant.Email</div>
+                                                <div class="fw-semibold">
+                                                    @participant.Name
+                                                </div>
                                             </div>
+
                                         </div>
+
                                     </td>
+
+                                    <!-- EMAIL -->
                                     <td class="text-muted">
                                         @participant.Email
                                     </td>
+
+                                    <!-- DATE -->
                                     <td class="text-muted">
-                                        Registered at: @participant.RegistrationDate.ToString("dd-MM-yyyy HH:mm")
+                                        @participant.RegistrationDate
+                                        .ToString("dd-MM-yyyy HH:mm")
                                     </td>
+
+                                    <!-- STATUS -->
                                     <td>
+
                                         @if (participant.Attended)
                                         {
                                             <span class="badge bg-success bg-opacity-10 text-success">
-                                                <i class="bi bi-check-circle-fill me-1"></i> Present
+
+                                                <i class="bi bi-check-circle-fill me-1"></i>
+
+                                                Present
+
                                             </span>
                                         }
                                         else
                                         {
                                             <span class="badge bg-danger bg-opacity-10 text-danger">
-                                                <i class="bi bi-x-circle-fill me-1"></i> Absent
+
+                                                <i class="bi bi-x-circle-fill me-1"></i>
+
+                                                Absent
+
                                             </span>
                                         }
+
                                     </td>
+
                                 </tr>
                             }
+
                         </tbody>
+
                     </table>
+
                 </div>
             }
+
         </div>
+
     </div>
 </div>
 
