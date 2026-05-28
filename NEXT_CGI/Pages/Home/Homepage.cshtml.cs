@@ -28,9 +28,9 @@ namespace NEXT.Pages.Home
         {
             int? currentUserId = HttpContext.Session.GetInt32("UserId");
             
-            if (!currentUserId.HasValue)
+            if (currentUserId == null)
             {
-                //return RedirectToPage("/Auth/Login");
+                return RedirectToPage("/Auth/Welcome");
             }
 
             RegisteredEvents = _eventRegistrationRepository.GetRegisteredEventsByUser(currentUserId.Value);
