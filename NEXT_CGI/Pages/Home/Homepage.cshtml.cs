@@ -28,7 +28,7 @@ namespace NEXT.Pages.Home
             
             if (!currentUserId.HasValue)
             {
-                //return RedirectToPage("/Auth/Login");
+                return RedirectToPage("/Auth/Welcome");
             }
 
             RegisteredEvents = _eventRegistrationRepository.GetRegisteredEventsByUser(currentUserId.Value);
@@ -96,7 +96,17 @@ namespace NEXT.Pages.Home
         public IActionResult OnPostLogout()
         {
             HttpContext.Session.Clear();
-            return RedirectToPage("/Auth/Login");
+            var domain = "dev-xaeav3wbqayvz1av.us.auth0.com";
+            var clientId = "eB6NyuBwvR3XUB5uSwQgmhfytfg7asUE";
+            var returnTo = $"{Request.Scheme}://{Request.Host}/Welcome";
+            
+            // deauthenticate
+            var logoutUrl =
+                $"https://{domain}/v2/logout" +
+                $"?client_id={clientId}" +
+                $"&returnTo={Uri.EscapeDataString(returnTo)}";
+
+            return Redirect(logoutUrl);
         }
     }
 }
