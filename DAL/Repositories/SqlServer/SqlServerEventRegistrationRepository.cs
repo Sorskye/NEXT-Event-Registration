@@ -219,7 +219,7 @@ namespace DAL.Repositories.SqlServer
         private static int CreateRegistration(SqlConnection con, SqlTransaction transaction)
         {
             using SqlCommand cmd = new SqlCommand(
-                "INSERT INTO Registration DEFAULT VALUES; SELECT CONVERT(int, SCOPE_IDENTITY());",
+                "INSERT INTO Registration (Registration_date, Attended) VALUES (GETDATE(), 0); SELECT CONVERT(int, SCOPE_IDENTITY());",
                 con,
                 transaction);
 

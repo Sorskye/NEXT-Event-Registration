@@ -18,8 +18,14 @@ namespace NEXT.Pages.Dashboards
         public List<Event> UserMadeEvents { get; set; }
         public List<Event> RegisteredEvents { get; set; }
         public List<Event> UpcomingEvents { get; set; }
-        public TimeOnly? Ending_time { get; set; }
+        public List<Event> EndedEvents { get; set; }
+        public DateOnly? Beginning_date { get; set; }
+
         public DateOnly? Ending_date { get; set; }
+
+        public TimeOnly? Beginning_time { get; set; }
+
+        public TimeOnly? Ending_time { get; set; }
 
 
 
@@ -51,14 +57,28 @@ namespace NEXT.Pages.Dashboards
 
             UserName = HttpContext.Session.GetString("UserName");
 
-            // Load events created by this organizer
             UserMadeEvents = _eventRepository.GetEventsByUser(currentUserId.Value);
 
-            // Mark whether the organizer is registered for each event
+            UpcomingEvents = new List<Event>();
+            EndedEvents = new List<Event>();
+
             foreach (var ev in UserMadeEvents)
             {
                 ev.IsRegistered = _eventRegistrationRepository
                     .IsUserRegistered(currentUserId.Value, ev.Id);
+
+                if (ev.Ending_date == null || ev.Ending_time == null)
+                {
+                    UpcomingEvents.Add(ev);
+                    continue;
+                }
+
+                var ending = ev.Ending_date.Value.ToDateTime(ev.Ending_time.Value);
+
+                if (ending > DateTime.Now)
+                    UpcomingEvents.Add(ev);
+                else
+                    EndedEvents.Add(ev);
             }
 
             TotalEvents = UserMadeEvents.Count;

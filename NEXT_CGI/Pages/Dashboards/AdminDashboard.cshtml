@@ -1,27 +1,30 @@
 ﻿@page
 @model NEXT.Pages.Dashboards.AdminDashboardModel
+
 @{
     ViewData["Title"] = "AdminDashboard";
 }
 
-<h2>Hallo, @Model.UserName</h2>
+<a asp-page="/Events/CreateEvent" class="btn btn-create-event">
+    Nieuw evenement aanmaken
+</a>
+
+    <h2 class="section-title">Hallo, @Model.UserName</h2>
+    <br>
+
 
 <div class="homepage-wrapper">
     <div class="homepage-container">
-
-        <a asp-page="/Events/CreateEvent" class="btn btn-create-event">
-            Nieuw evenement aanmaken
-        </a>
 
         <section class="section-block">
             <h2 class="section-title">Jouw komende evenementen:</h2>
         </section>
 
-        @if (Model.UserMadeEvents != null && Model.UserMadeEvents.Any())
+        @if (Model.UpcomingEvents != null && Model.UpcomingEvents.Any())
         {
             <section class="section-block">
                 <div class="row g-4">
-                    @foreach (var ev in Model.UserMadeEvents)
+                    @foreach (var ev in Model.UpcomingEvents)
                     {
                         <div class="col-md-6 col-lg-4">
                             <div class="card event-card">
@@ -67,26 +70,12 @@
             <h2 class="section-title">Jouw verlopen evenementen:</h2>
         </section>
 
-        @if (Model.UserMadeEvents.Any(e =>
-{
-    if (e.Ending_date == null || e.Ending_time == null)
-        return false;
-
-    var ending = e.Ending_date.Value.ToDateTime(e.Ending_time.Value);
-    return DateTime.Now > ending;
-}))
+        @if (Model.EndedEvents != null && Model.EndedEvents.Any())
         {
             <section class="section-block">
                 <div class="row g-4">
 
-                    @foreach (var ev in Model.UserMadeEvents.Where(e =>
-                    {
-                        if (e.Ending_date == null || e.Ending_time == null)
-                            return false;
-
-                        var ending = e.Ending_date.Value.ToDateTime(e.Ending_time.Value);
-                        return DateTime.Now > ending;
-                    }))
+                    @foreach (var ev in Model.EndedEvents)
                     {
                         <div class="col-md-6 col-lg-4">
                             <div class="card event-card">
