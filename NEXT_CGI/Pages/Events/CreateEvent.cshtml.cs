@@ -95,14 +95,14 @@ namespace NEXT.Pages.Events
             DateOnly minimumDate = DateOnly.FromDateTime(DateTime.Now);
             TimeOnly minimumTime = TimeOnly.FromDateTime(DateTime.Now.AddHours(2));
 
-            if (Beginning_date.HasValue && Beginning_time.HasValue)
-            {
-                if (Beginning_date.Value < minimumDate ||
-                   (Beginning_date.Value == minimumDate && Beginning_time.Value < minimumTime))
-                {
-                    ModelState.AddModelError(nameof(Beginning_time), "Begintijd moet minimaal 2 uur vanaf nu zijn.");
-                }
-            }
+            //if (Beginning_date.HasValue && Beginning_time.HasValue)
+            //{
+            //    if (Beginning_date.Value < minimumDate ||
+            //       (Beginning_date.Value == minimumDate && Beginning_time.Value < minimumTime))
+            //    {
+            //        ModelState.AddModelError(nameof(Beginning_time), "Begintijd moet minimaal 2 uur vanaf nu zijn.");
+            //    }
+            //}
 
             if (Beginning_date.HasValue && Ending_date.HasValue)
             {

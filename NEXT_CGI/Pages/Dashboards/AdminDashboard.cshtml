@@ -14,7 +14,7 @@
         </a>
 
         <section class="section-block">
-            <h2 class="section-title">Jouw evenementen:</h2>
+            <h2 class="section-title">Jouw komende evenementen:</h2>
         </section>
 
         @if (Model.UserMadeEvents != null && Model.UserMadeEvents.Any())
@@ -66,5 +66,71 @@
         <section class="section-block">
             <h2 class="section-title">Jouw Verlopen evenementen:</h2>
         </section>
+
+        @if (Model.UserMadeEvents.Any(e =>
+{
+    if (e.Ending_date == null || e.Ending_time == null)
+        return false;
+
+    var ending = e.Ending_date.Value.ToDateTime(e.Ending_time.Value);
+    return DateTime.Now > ending;
+}))
+        {
+            <section class="section-block">
+                <div class="row g-4">
+
+                    @foreach (var ev in Model.UserMadeEvents.Where(e =>
+                    {
+                        if (e.Ending_date == null || e.Ending_time == null)
+                            return false;
+
+                        var ending = e.Ending_date.Value.ToDateTime(e.Ending_time.Value);
+                        return DateTime.Now > ending;
+                    }))
+                    {
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card event-card">
+                                <img src="@ev.ImageUrl" class="event-image" alt="@ev.Title" />
+
+                                <div class="event-card-body">
+
+                                    <a asp-page="/Events/EventDetails"
+                                       asp-route-id="@ev.Id"
+                                       class="stretched-link"
+                                       aria-label="Bekijk @ev.Title"></a>
+
+                                    <div class="event-meta">
+                                        <p><strong>Locatie:</strong> @ev.Location</p>
+                                        <p>
+                                            <strong>Datum:</strong>
+                                            @ev.Beginning_date?.ToString("dd-MM-yyyy")
+                                            @ev.Beginning_time?.ToString("HH:mm")
+                                        </p>
+                                        <p><strong>Organizer:</strong> @ev.Organizer</p>
+                                    </div>
+
+                                    <div class="event-actions">
+                                        <div class="event-rapport">
+                                            <a asp-page="/Dashboards/Rapport"
+                                               asp-route-id="@ev.Id"
+                                               class="btn btn-nera-secondary">
+                                                Bekijk rapport
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </section>
+        }
+        else
+        {
+            <p>Geen afgelopen evenementen.</p>
+        }
+
     </div>
 </div>

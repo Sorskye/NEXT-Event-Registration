@@ -18,7 +18,9 @@ namespace NEXT.Pages.Dashboards
         public List<Event> UserMadeEvents { get; set; }
         public List<Event> RegisteredEvents { get; set; }
         public List<Event> UpcomingEvents { get; set; }
-        //public List<Event> DateTime_ending { get; set }
+        public TimeOnly? Ending_time { get; set; }
+        public DateOnly? Ending_date { get; set; }
+
 
 
 
