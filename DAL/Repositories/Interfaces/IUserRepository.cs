@@ -5,5 +5,6 @@ namespace DAL.Repositories.Interfaces;
 public interface IUserRepository // Verantwoordelijk voor [GEBRUIKERS] vinden bij login, en checken of iemand admin is
 {
     User GetUserByEmail(string email);
+    //object GetUserByExternalId(string auth0UserId);
     bool IsUserAdmin(int userId);
 }
