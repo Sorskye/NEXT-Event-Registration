@@ -28,7 +28,7 @@ namespace NEXT.Pages.Home
             
             if (!currentUserId.HasValue)
             {
-                return RedirectToPage("/Auth/Welcome");
+                //return RedirectToPage("/Auth/Login");
             }
 
             RegisteredEvents = _eventRegistrationRepository.GetRegisteredEventsByUser(currentUserId.Value);

@@ -1,6 +1,11 @@
 using DAL.Repositories.Interfaces;
 using DAL.Repositories.SqlServer;
 using Auth0.AspNetCore.Authentication;
+using NEXT.wwwroot;
+
+using Auth0.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 using Auth0.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication;
@@ -32,7 +37,20 @@ builder.Services.AddScoped<IEventRegistrationRepository>(_ => new SqlServerEvent
 builder.Services.AddScoped<IEventRepository>(serviceProvider => new SqlServerEventRepository(connectionString, serviceProvider.GetRequiredService<ILocationRepository>()));
 builder.Services.AddScoped<IUserRepository>(_ => new SqlServerUserRepository(connectionString));
 
+builder.Services.AddSingleton<QrCoderService>();
+
+
 var app = builder.Build();
+
+app.MapGet("/api/qrcode/event/{eventId:int}", (HttpContext http, int eventId, QrCoderService qrCoderService) =>
+{
+    var baseUrl = $"{http.Request.Scheme}://{http.Request.Host}";
+    var targetUrl = $"{baseUrl}/EventCheckIn/{eventId}";
+
+    var bytes = qrCoderService.GeneratePng(targetUrl);
+
+    return Results.File(bytes, "image/png");
+});
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
