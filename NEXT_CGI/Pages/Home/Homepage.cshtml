@@ -16,7 +16,7 @@
                     {
                         <div class="col-md-6 col-lg-4">
                             <div class="card event-card position-relative">
-                                <img src="@ev.ImageUrl" class="event-image" alt="@ev.Title" />
+                                <img src="@ev.ImageUrl" class="event-image" alt="@ev.Title"/>
 
                                 <div class="event-card-body">
                                     <h5 class="card-title">@ev.Title</h5>
@@ -30,7 +30,7 @@
 
                                     <div class="event-actions">
                                         <form method="post" asp-page-handler="Unregister">
-                                            <input type="hidden" name="id" value="@ev.Id" />
+                                            <input type="hidden" name="id" value="@ev.Id"/>
                                             <button type="submit" class="btn btn-nera-secondary">Afmelden</button>
                                         </form>
                                     </div>
@@ -56,7 +56,7 @@
                     {
                         <div class="col-md-6 col-lg-4">
                             <div class="card event-card position-relative">
-                                <img src="@ev.ImageUrl" class="event-image" alt="@ev.Title" />
+                                <img src="@ev.ImageUrl" class="event-image" alt="@ev.Title"/>
 
                                 <div class="event-card-body">
                                     <h5 class="card-title">@ev.Title</h5>
@@ -70,7 +70,7 @@
 
                                     <div class="event-actions">
                                         <form method="post" asp-page-handler="Register">
-                                            <input type="hidden" name="id" value="@ev.Id" />
+                                            <input type="hidden" name="id" value="@ev.Id"/>
                                             <button type="submit" class="btn btn-nera-primary">Meld aan</button>
                                         </form>
                                     </div>

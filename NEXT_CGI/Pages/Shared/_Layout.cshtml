@@ -35,7 +35,10 @@
 
                     <div class="nera-nav-links">
                         <a class="nera-nav-link @(isHomeActive ? "active" : "")" asp-area="" asp-page="/Home/Homepage">Home</a>
-                        <a class="nera-nav-link @(isDashboardActive ? "active" : "")" asp-area="" asp-page="@dashboardPage">Dashboard</a>
+                        @if (isAdmin)
+                        {
+                            <a class="nera-nav-link @(isDashboardActive ? "active" : "")" asp-area="" asp-page="@dashboardPage">Dashboard</a>
+                        }
 
                         @if (!string.IsNullOrEmpty(Context.Session.GetString("UserName")))
                         {
