@@ -1,6 +1,7 @@
 using DAL.Repositories.Interfaces;
 using Microsoft.Data.SqlClient;
 using NERA.Models;
+using DAL.Models;
 
 namespace DAL.Repositories.SqlServer
 {
@@ -11,12 +12,6 @@ namespace DAL.Repositories.SqlServer
         public SqlServerEventRegistrationRepository(string connectionString)
         {
             this.connectionString = connectionString;
-        }
-        public enum AttendanceUpdateResult
-        {
-            Success,
-            NotRegistered,
-            AlreadyAttended
         }
 
         public void RegisterUserForEvent(int userId, int eventId)
@@ -121,7 +116,7 @@ namespace DAL.Repositories.SqlServer
                 INNER JOIN Registration_Event re ON e.ID = re.EventID
                 INNER JOIN Registration_User ru ON re.RegistrationID = ru.RegistrationID
                 WHERE ru.UserID = @UserID
-                ORDER BY e.Beginning_date ASC, e.Beginning_time ASC";
+                ORDER BY e.Date_time ASC";
 
             using SqlCommand cmd = new SqlCommand(sqlQuery, con);
             cmd.Parameters.AddWithValue("@UserID", userId);
@@ -150,7 +145,7 @@ namespace DAL.Repositories.SqlServer
                     INNER JOIN Registration_User ru ON re.RegistrationID = ru.RegistrationID
                     WHERE ru.UserID = @UserID
                 )
-                ORDER BY e.Beginning_date ASC, e.Beginning_time ASC";
+                ORDER BY e.Date_time ASC";
 
             using SqlCommand cmd = new SqlCommand(sqlQuery, con);
             cmd.Parameters.AddWithValue("@UserID", userId);
@@ -219,7 +214,7 @@ namespace DAL.Repositories.SqlServer
         private static int CreateRegistration(SqlConnection con, SqlTransaction transaction)
         {
             using SqlCommand cmd = new SqlCommand(
-                "INSERT INTO Registration (Registration_date, Attended) VALUES (GETDATE(), 0); SELECT CONVERT(int, SCOPE_IDENTITY());",
+                "INSERT INTO Registration(Registration_date, Attended) VALUES (GetDate(), 0); SELECT CONVERT(int, SCOPE_IDENTITY());",
                 con,
                 transaction);
 
@@ -248,54 +243,82 @@ namespace DAL.Repositories.SqlServer
             cmd.ExecuteNonQuery();
         }
 
-        public AttendanceUpdateResult TryMarkAttendance(int userId, int eventId, bool attended)
+        public void UpdateAttendance(int registrationId, bool attended)
         {
             using SqlConnection con = new SqlConnection(connectionString);
             con.Open();
 
-            string selectQuery = @"
-        SELECT r.ID, r.Attended
-        FROM Registration r
-        INNER JOIN Registration_User ru ON r.ID = ru.RegistrationID
-        INNER JOIN Registration_Event re ON r.ID = re.RegistrationID
-        WHERE ru.UserID = @UserID
-          AND re.EventID = @EventID";
+            string query = @"
+            UPDATE Registration
+            SET Attended = @Attended
+            WHERE ID = @RegistrationID";
 
-            using SqlCommand selectCmd = new SqlCommand(selectQuery, con);
-            selectCmd.Parameters.AddWithValue("@UserID", userId);
-            selectCmd.Parameters.AddWithValue("@EventID", eventId);
+            using SqlCommand cmd = new SqlCommand(query, con);
 
-            using SqlDataReader reader = selectCmd.ExecuteReader();
+            cmd.Parameters.AddWithValue("@Attended", attended);
+            cmd.Parameters.AddWithValue("@RegistrationID", registrationId);
 
-            if (!reader.Read())
+            int rowsAffected = cmd.ExecuteNonQuery();
+
+            if (rowsAffected == 0)
             {
-                return AttendanceUpdateResult.NotRegistered;
+                Console.WriteLine("Geen registration gevonden.");
+            }
+        }
+
+        public List<Registration> GetRegisteredByEventId(int eventId)
+        {
+            List<Registration> registrations = new List<Registration>();
+
+            using SqlConnection con = new SqlConnection(connectionString);
+
+            con.Open();
+
+            string sqlQuery = @"
+                SELECT 
+                    r.ID,
+                    r.Attended,
+                    r.Registration_date,
+
+                    ru.UserID,
+
+                    u.Name,
+                    u.Email
+
+                FROM Registration r
+
+                INNER JOIN Registration_Event re 
+                    ON r.ID = re.RegistrationID
+
+                INNER JOIN Registration_User ru 
+                    ON r.ID = ru.RegistrationID
+
+                INNER JOIN Users u
+                    ON ru.UserID = u.ID
+
+                WHERE re.EventID = @EventID";
+
+            using SqlCommand cmd = new SqlCommand(sqlQuery, con);
+
+            cmd.Parameters.AddWithValue("@EventID", eventId);
+
+            using SqlDataReader dr = cmd.ExecuteReader();
+
+            while (dr.Read())
+            {
+                registrations.Add(new Registration
+                {
+                    Id = Convert.ToInt32(dr["ID"]),
+                    UserId = Convert.ToInt32(dr["UserID"]),
+                    EventId = eventId,
+                    Name = dr["Name"].ToString(),
+                    Email = dr["Email"].ToString(),
+                    RegistrationDate = Convert.ToDateTime(dr["Registration_date"]),
+                    Attended = Convert.ToBoolean(dr["Attended"])
+                });
             }
 
-            int registrationId = Convert.ToInt32(reader["ID"]);
-            bool? currentAttended = reader["Attended"] == DBNull.Value
-                ? null
-                : Convert.ToBoolean(reader["Attended"]);
-
-            reader.Close();
-
-            if (currentAttended == true)
-            {
-                return AttendanceUpdateResult.AlreadyAttended;
-            }
-
-            string updateQuery = @"
-        UPDATE Registration
-        SET Attended = @Attended
-        WHERE ID = @RegistrationID";
-
-            using SqlCommand updateCmd = new SqlCommand(updateQuery, con);
-            updateCmd.Parameters.AddWithValue("@Attended", attended);
-            updateCmd.Parameters.AddWithValue("@RegistrationID", registrationId);
-
-            updateCmd.ExecuteNonQuery();
-
-            return AttendanceUpdateResult.Success;
+            return registrations;
         }
     }
 }

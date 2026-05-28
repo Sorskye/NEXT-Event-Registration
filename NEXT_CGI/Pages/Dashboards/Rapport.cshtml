@@ -1,7 +1,7 @@
-﻿@page "/AdminDashboard/Rapport"
+﻿@page "/Dashboards/Rapport/{EventId?}"
 @model NEXT.Pages.Dashboards.RapportModel
 @{
-	ViewData["Title"] = "Rapport";
+	ViewData["Title"] = "Rapportage";
 }
 
 <link rel="stylesheet" href="~/css/presence.css" />
@@ -10,97 +10,195 @@
 <div class="container mt-4">
 
     <div class="row">
-        <h2 class="mb-0">Presence <small class="text-muted">absent</small></h2>
+        <h2 class="mb-0">Aanwezigheid </h2>
     </div>
 
     <!-- Summary Card -->
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body">
             <div class="row text-center">
+
                 <div class="col">
                     <div class="d-flex align-items-center justify-content-center">
                         <i class="bi bi-people-fill fs-4 me-2 text-primary"></i>
                         <div class="text-start">
-                            <div class="text-muted small">Total registrations</div>
-                            <div class="fs-4 fw-bold">5</div>
+                            <div class="text-muted small">Totaal registraties</div>
+                            <div class="fs-4 fw-bold">
+                                @Model.PresenceData.TotalRegistrations
+                            </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="col">
                     <div class="d-flex align-items-center justify-content-center">
                         <i class="bi bi-check-circle-fill fs-4 me-2 text-success"></i>
                         <div class="text-start">
-                            <div class="text-muted small">Present</div>
-                            <div class="fs-4 fw-bold">0</div>
+                            <div class="text-muted small">Aanwezig</div>
+                            <div class="fs-4 fw-bold">
+                                @Model.PresenceData.PresentCount
+                            </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="col">
                     <div class="d-flex align-items-center justify-content-center">
                         <i class="bi bi-x-circle-fill fs-4 me-2 text-danger"></i>
                         <div class="text-start">
-                            <div class="text-muted small">Absent</div>
-                            <div class="fs-4 fw-bold">5</div>
+                            <div class="text-muted small">Afwezig</div>
+                            <div class="fs-4 fw-bold">
+                                @Model.PresenceData.AbsentCount
+                            </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
 
     <!-- Participant Table -->
     <div class="card border-0 shadow-sm">
+
         <div class="card-header bg-white py-3">
-            <h5 class="mb-0">Participant list</h5>
+            <h5 class="mb-0">
+                Deelnemerslijst voor @Model.PresenceData.EventName
+            </h5>
         </div>
+
         <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th style="width: 50px"></th>
-                            <th>Name</th>
-                            <th>E-mailaddress</th>
-                            <th>Registered at</th>
-                            <th style="width: 120px"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (int i = 0; i < 5; i++)
-                        {
-                            <tr class="align-middle">
-                                <td>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="check@(i)">
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="me-3">
-                                            <i class="bi bi-person-circle fs-4 text-muted"></i>
-                                        </div>
-                                        <div>
-                                            <div class="fw-semibold">Name</div>
-                                            <div class="text-muted small">E-mailaddress</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="text-muted">
-                                    E-mailaddress
-                                </td>
-                                <td class="text-muted">
-                                    Registered at: dd-mm-yyyy
-                                </td>
-                                <td>
-                                    <span class="badge bg-danger bg-opacity-10 text-danger">
-                                        <i class="bi bi-x-circle-fill me-1"></i> Absent
-                                    </span>
-                                </td>
+
+            @if (Model.PresenceData?.Participants == null ||
+                 !Model.PresenceData.Participants.Any())
+            {
+                <div class="p-4 text-center text-muted">
+
+                    <i class="fas fa-user-slash fa-2x mb-2"></i>
+
+                    <div class="fw-semibold">
+                        Er heeft zich nog niemand aangemeld voor dit event.
+                    </div>
+
+                    <div class="small">
+                        Geen deelnemers gevonden voor
+                        @Model.PresenceData?.EventName
+                    </div>
+
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-hover mb-0">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 70px"></th>
+                                <th>Name</th>
+                                <th>E-mailaddress</th>
+                                <th>Registered at</th>
+                                <th style="width: 120px">Status</th>
                             </tr>
-                        }
-                    </tbody>
-                  </table>
-            </div>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var participant in Model.PresenceData.Participants)
+                            {
+                                <tr class="align-middle">
+                                    <!-- CHECKBOX -->
+                                    <td>
+
+                                        <form method="post" asp-page="/Dashboards/Rapport">
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@Model.EventId" />
+
+                                            <input type="hidden"
+                                                   name="RegistrationId"
+                                                   value="@participant.Id" />
+
+                                            <input type="checkbox"
+                                                   class="form-check-input"
+                                                   name="Attended"
+                                                   value="true"
+                                                   onchange="this.form.submit()"
+                                            @(participant.Attended ? "checked" : "") />
+                                        </form>
+
+                                    </td>
+
+                                    <!-- NAME -->
+                                    <td>
+
+                                        <div class="d-flex align-items-center">
+
+                                            <div class="me-3">
+                                                <i class="bi bi-person-circle fs-4 text-muted"></i>
+                                            </div>
+
+                                            <div>
+                                                <div class="fw-semibold">
+                                                    @participant.Name
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+                                    <!-- EMAIL -->
+                                    <td class="text-muted">
+                                        @participant.Email
+                                    </td>
+
+                                    <!-- DATE -->
+                                    <td class="text-muted">
+                                        @participant.RegistrationDate
+                                    </td>
+
+                                    <!-- STATUS -->
+                                    <td>
+
+                                        @if (participant.Attended)
+                                        {
+                                            <span class="badge bg-success bg-opacity-10 text-success">
+
+                                                <i class="bi bi-check-circle-fill me-1"></i>
+
+                                                Present
+
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger bg-opacity-10 text-danger">
+
+                                                <i class="bi bi-x-circle-fill me-1"></i>
+
+                                                Absent
+
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+
         </div>
-     </div>
+
+    </div>
 </div>
+
+
+            
