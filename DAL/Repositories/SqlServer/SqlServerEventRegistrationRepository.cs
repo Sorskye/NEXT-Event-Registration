@@ -1,6 +1,7 @@
 using DAL.Repositories.Interfaces;
 using Microsoft.Data.SqlClient;
 using NERA.Models;
+using DAL.Models;
 
 namespace DAL.Repositories.SqlServer
 {
@@ -240,6 +241,52 @@ namespace DAL.Repositories.SqlServer
             cmd.Parameters.AddWithValue("@EventID", eventId);
             cmd.Parameters.AddWithValue("@RegistrationID", registrationId);
             cmd.ExecuteNonQuery();
+        }
+
+        public void UpdateAttendance(int registrationId, bool attended)
+        {
+            using SqlConnection con = new SqlConnection(connectionString);
+
+            con.Open();
+
+            string query = @"
+            UPDATE Registration
+            SET Attended = @Attended
+            WHERE ID = @RegistrationID";
+
+            using SqlCommand cmd = new SqlCommand(query, con);
+
+            cmd.Parameters.AddWithValue("@Attended", attended);
+            cmd.Parameters.AddWithValue("@RegistrationID", registrationId);
+
+            cmd.ExecuteNonQuery();
+        }
+
+        public List<Registration> GetRegisteredByEventId(int eventId)
+        {
+            List<Registration> registrations = new List<Registration>();
+
+            using SqlConnection con = new SqlConnection(connectionString);
+            con.Open();
+            string sqlQuery = @"
+                SELECT r.ID, r.Attended, ru.UserID
+                FROM Registration r
+                INNER JOIN Registration_Event re ON r.ID = re.RegistrationID
+                INNER JOIN Registration_User ru ON r.ID = ru.RegistrationID
+                WHERE re.EventID = @EventID";
+            using SqlCommand cmd = new SqlCommand(sqlQuery, con);
+            cmd.Parameters.AddWithValue("@EventID", eventId);
+            using SqlDataReader dr = cmd.ExecuteReader();
+            while (dr.Read())
+            {
+                registrations.Add(new Registration
+                {
+                    Id = Convert.ToInt32(dr["ID"]),
+                    Attended = Convert.ToBoolean(dr["Attended"]),
+                    UserId = Convert.ToInt32(dr["UserID"])
+                });
+            }
+            return registrations;
         }
     }
 }

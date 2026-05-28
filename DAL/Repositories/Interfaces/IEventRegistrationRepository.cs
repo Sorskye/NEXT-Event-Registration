@@ -1,3 +1,4 @@
+using DAL.Models;
 using NERA.Models;
 
 namespace DAL.Repositories.Interfaces;
@@ -10,4 +11,6 @@ public interface IEventRegistrationRepository // Verantwoordelijk voor [REGISTRA
     List<Event> GetUpcomingEventsByUser(int userId);
     bool IsUserRegistered(int userId, int eventId);
     int GetParticipantCountByEventId(int eventId);
+    void UpdateAttendance(int registrationId, bool attended);
+    List<Registration> GetRegisteredByEventId(int eventId);
 }

@@ -1,4 +1,4 @@
-﻿@page "/AdminDashboard/Rapport"
+﻿@page "/Dashboards/Rapport/{EventId?}"
 @model NEXT.Pages.Dashboards.RapportModel
 @{
 	ViewData["Title"] = "Rapportage";
@@ -10,7 +10,7 @@
 <div class="container mt-4">
 
     <div class="row">
-        <h2 class="mb-0">Aanwezigheid <small class="text-muted"></small></h2>
+        <h2 class="mb-0">Aanwezigheid </h2>
     </div>
 
     <!-- Summary Card -->
@@ -51,56 +51,82 @@
     <!-- Participant Table -->
     <div class="card border-0 shadow-sm">
         <div class="card-header bg-white py-3">
-            <h5 class="mb-0">Deelnemerslijst</h5>
+            <h5 class="mb-0">Participant list for @Model.PresenceData.EventName</h5>
         </div>
         <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th style="width: 50px"></th>
-                            <th>Naam</th>
-                            <th>E-mailadres</th>
-                            <th>Geregistreerd op</th>
-                            <th style="width: 120px"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (int i = 0; i < 5; i++)
-                        {
-                            <tr class="align-middle">
-                                <td>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="check@(i)">
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="me-3">
-                                            <i class="bi bi-person-circle fs-4 text-muted"></i>
-                                        </div>
-                                        <div>
-                                            <div class="fw-semibold">Name</div>
-                                            <div class="text-muted small">E-mailaddress</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="text-muted">
-                                    E-mailaddress
-                                </td>
-                                <td class="text-muted">
-                                    Registered at: dd-mm-yyyy
-                                </td>
-                                <td>
-                                    <span class="badge bg-danger bg-opacity-10 text-danger">
-                                        <i class="bi bi-x-circle-fill me-1"></i> Absent
-                                    </span>
-                                </td>
+            @if (Model.PresenceData?.Participants == null || !Model.PresenceData.Participants.Any())
+            {
+                <div class="p-4 text-center text-muted">
+                    <i class="fas fa-user-slash fa-2x mb-2"></i>
+                    <div class="fw-semibold">Er heeft zich nog niemand aangemeld voor dit event.</div>
+                    <div class="small">Geen deelnemers gevonden voor @Model.PresenceData?.EventName</div>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 50px"></th>
+                                <th>Name</th>
+                                <th>E-mailaddress</th>
+                                <th>Registered at</th>
+                                <th style="width: 120px"></th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            @foreach (var participant in Model.PresenceData.Participants)
+                            {
+                                <tr class="align-middle">
+                                    <td>
+                                        <div class="form-check">
+                                            <input class="form-check-input presence-checkbox"
+                                                   type="checkbox"
+                                                   data-registration-id="@participant.RegistrationId"
+                                            @(participant.Attended ? "checked" : "")>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                <i class="bi bi-person-circle fs-4 text-muted"></i>
+                                            </div>
+                                            <div>
+                                                <div class="fw-semibold">@participant.Name</div>
+                                                <div class="text-muted small">@participant.Email</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-muted">
+                                        @participant.Email
+                                    </td>
+                                    <td class="text-muted">
+                                        Registered at: @participant.RegistrationDate.ToString("dd-MM-yyyy HH:mm")
+                                    </td>
+                                    <td>
+                                        @if (participant.Attended)
+                                        {
+                                            <span class="badge bg-success bg-opacity-10 text-success">
+                                                <i class="bi bi-check-circle-fill me-1"></i> Present
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger bg-opacity-10 text-danger">
+                                                <i class="bi bi-x-circle-fill me-1"></i> Absent
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
         </div>
-     </div>
+    </div>
 </div>
+
+
+            
