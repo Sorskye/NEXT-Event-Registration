@@ -1,15 +1,10 @@
 using DAL.Repositories.Interfaces;
 using DAL.Repositories.SqlServer;
 using Auth0.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using NEXT.wwwroot;
-
-using Auth0.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-
-using Auth0.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,8 +19,20 @@ builder.Services.AddAuth0WebAppAuthentication(options =>
     options.Domain = builder.Configuration["Auth0:Domain"];
     options.ClientId = builder.Configuration["Auth0:ClientId"];
     options.ClientSecret = builder.Configuration["Auth0:ClientSecret"];
-    
+
     options.Scope = "openid profile email";
+
+    options.OpenIdConnectEvents = new OpenIdConnectEvents
+    {
+        OnRemoteFailure = context =>
+        {
+            // Gebruiker klikte "Decline" → stuur terug naar login met prompt=login
+            // zodat ze direct met een ander account kunnen inloggen
+            context.Response.Redirect("/login?prompt=login");
+            context.HandleResponse();
+            return Task.CompletedTask;
+        }
+    };
 });
 
 // connection string
@@ -72,15 +79,19 @@ app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
 
-app.MapGet("/login", async (HttpContext httpContext, string? returnUrl = "/LoginRedirect") =>
+app.MapGet("/login", async (HttpContext httpContext, string? returnUrl = "/LoginRedirect", string? prompt = null) =>
 {
-    var authenticationProperties = new LoginAuthenticationPropertiesBuilder()
-        .WithRedirectUri(returnUrl)
-        .Build();
+    var builder = new LoginAuthenticationPropertiesBuilder()
+        .WithRedirectUri(returnUrl ?? "/LoginRedirect");
+
+    if (!string.IsNullOrEmpty(prompt))
+    {
+        builder.WithParameter("prompt", prompt);
+    }
 
     await httpContext.ChallengeAsync(
         Auth0Constants.AuthenticationScheme,
-        authenticationProperties);
+        builder.Build());
 });
 
 app.MapGet("/logout", async (HttpContext httpContext) =>
