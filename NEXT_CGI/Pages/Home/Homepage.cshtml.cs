@@ -34,31 +34,15 @@ namespace NEXT.Pages.Home
             }
 
             RegisteredEvents = _eventRegistrationRepository.GetRegisteredEventsByUser(currentUserId.Value);
-
-            // Filter out ended events from RegisteredEvents
             RegisteredEvents = RegisteredEvents
-                .Where(ev =>
-                {
-                    if (ev.Ending_date == null || ev.Ending_time == null)
-                        return true;
-
-                    var ending = ev.Ending_date.Value.ToDateTime(ev.Ending_time.Value);
-                    return ending > DateTime.Now;
-                })
+                .Where(ev => !ev.Beginning_date.HasValue ||
+                             ev.Beginning_date.Value.ToDateTime(ev.Beginning_time ?? TimeOnly.MinValue) > DateTime.Now)
                 .ToList();
 
             UpcomingEvents = _eventRegistrationRepository.GetUpcomingEventsByUser(currentUserId.Value);
-
-            // Filter out ended events from UpcomingEvents
             UpcomingEvents = UpcomingEvents
-                .Where(ev =>
-                {
-                    if (ev.Ending_date == null || ev.Ending_time == null)
-                        return true;
-
-                    var ending = ev.Ending_date.Value.ToDateTime(ev.Ending_time.Value);
-                    return ending > DateTime.Now;
-                })
+                .Where(ev => !ev.Beginning_date.HasValue ||
+                             ev.Beginning_date.Value.ToDateTime(ev.Beginning_time ?? TimeOnly.MinValue) > DateTime.Now)
                 .ToList();
 
             IsAdmin = _userRepository.IsUserAdmin(currentUserId.Value);

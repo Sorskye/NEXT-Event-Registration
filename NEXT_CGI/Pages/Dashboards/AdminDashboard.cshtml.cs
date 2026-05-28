@@ -15,12 +15,21 @@ namespace NEXT.Pages.Dashboards
         public int TotalEvents { get; set; }
         public string UserName { get; set; } = string.Empty;
         public bool IsAdmin { get; set; }
-        public List<Event> UserMadeEvents { get; set; } = new();
         public List<Event> RegisteredEvents { get; set; } = new();
         public List<Event> UpcomingEvents { get; set; } = new();
-        public List<Event> EndedEvents => UserMadeEvents
-            .Where(e => e.Beginning_date.HasValue && e.Beginning_time.HasValue &&
-                        e.Beginning_date.Value.ToDateTime(e.Beginning_time.Value) < System.DateTime.Now)
+
+        private List<Event> _allUserEvents = new();
+
+        // Alleen toekomstige evenementen (begindat+tijd nog niet verstreken, of geen datum ingevuld)
+        public List<Event> UserMadeEvents => _allUserEvents
+            .Where(e => !e.Beginning_date.HasValue ||
+                        e.Beginning_date.Value.ToDateTime(e.Beginning_time ?? TimeOnly.MinValue) > System.DateTime.Now)
+            .ToList();
+
+        // Alleen verlopen evenementen (begindatum+tijd al verstreken)
+        public List<Event> EndedEvents => _allUserEvents
+            .Where(e => e.Beginning_date.HasValue &&
+                        e.Beginning_date.Value.ToDateTime(e.Beginning_time ?? TimeOnly.MinValue) <= System.DateTime.Now)
             .ToList();
 
         
@@ -53,13 +62,13 @@ namespace NEXT.Pages.Dashboards
 
             UserName = HttpContext.Session.GetString("UserName");
 
-            UserMadeEvents = _eventRepository.GetEventsByUser(currentUserId.Value);
+            _allUserEvents = _eventRepository.GetEventsByUser(currentUserId.Value);
             RegisteredEvents = _eventRegistrationRepository.GetRegisteredEventsByUser(currentUserId.Value);
             UpcomingEvents = _eventRegistrationRepository.GetUpcomingEventsByUser(currentUserId.Value);
 
             IsAdmin = _userRepository.IsUserAdmin(currentUserId.Value);
 
-            TotalEvents = UserMadeEvents.Count;
+            TotalEvents = _allUserEvents.Count;
 
             return Page();
         }

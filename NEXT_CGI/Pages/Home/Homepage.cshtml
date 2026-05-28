@@ -58,8 +58,14 @@
                             <div class="card event-card position-relative">
                                 <img src="@ev.ImageUrl" class="event-image" alt="@ev.Title"/>
 
-                                <div class="event-card-body">
-                                    <h5 class="card-title">@ev.Title</h5>
+                                                <div class="event-card-body">
+                                    <div class="card-title-row">
+                                        <h5 class="card-title">@ev.Title</h5>
+                                        @if (string.Equals(ev.Organizer, Model.CurrentUserName, StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <span class="badge-own-event">Gemaakt door u</span>
+                                        }
+                                    </div>
                                     <a asp-page="/Events/EventDetails" asp-route-id="@ev.Id" class="stretched-link" aria-label="Bekijk @ev.Title"></a>
 
                                     <div class="event-meta">

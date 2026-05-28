@@ -24,7 +24,19 @@
                     </p>
 
                     <div class="event-highlight-box">
-                        @if (Model.IsRegistered)
+                        @{
+                            var isExpiredHighlight = Model.SelectedEvent.Beginning_date.HasValue &&
+                                                     Model.SelectedEvent.Beginning_date.Value.ToDateTime(
+                                                         Model.SelectedEvent.Beginning_time ?? TimeOnly.MinValue) < DateTime.Now;
+                        }
+                        @if (isExpiredHighlight)
+                        {
+                            <h2 class="event-highlight-title">Dit evenement is verlopen</h2>
+                            <p class="event-highlight-text">
+                                Dit evenement is al begonnen of afgelopen. Aanmelden is helaas niet meer mogelijk.
+                            </p>
+                        }
+                        else if (Model.IsRegistered)
                         {
                             <h2 class="event-highlight-title">Je bent aangemeld</h2>
                             <p class="event-highlight-text">
@@ -84,7 +96,20 @@
                 </div>
 
                 <div class="action-box">
-                    @if (Model.IsRegistered)
+                    @{
+                        var isExpired = Model.SelectedEvent.Beginning_date.HasValue &&
+                                        Model.SelectedEvent.Beginning_date.Value.ToDateTime(
+                                            Model.SelectedEvent.Beginning_time ?? TimeOnly.MinValue) < DateTime.Now;
+                    }
+                    @if (isExpired)
+                    {
+                        <div class="action-title">Evenement verlopen</div>
+                        <p class="action-text">
+                            Dit evenement is al begonnen of afgelopen. Aanmelden is niet meer mogelijk.
+                        </p>
+                        <button class="btn btn-nera-secondary" disabled>Niet meer beschikbaar</button>
+                    }
+                    else if (Model.IsRegistered)
                     {
                         <div class="action-title">Registratie beheren</div>
                         <p class="action-text">
