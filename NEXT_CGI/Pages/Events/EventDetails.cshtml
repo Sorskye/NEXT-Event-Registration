@@ -134,7 +134,43 @@
                         </form>
                     }
                 </div>
+
+                @if (Model.IsCreator)
+                {
+                    <div class="action-box" style="border-top: 1px solid #f3f4f6; margin-top: 12px; padding-top: 20px;">
+                        <div class="action-title" style="color: #dc2626;">Evenement verwijderen</div>
+                        <p class="action-text">Als organisator van dit event, kun je dit evenement permanent verwijderen.</p>
+                        <form method="post" asp-page-handler="Delete" id="delete-event-form">
+                            <input type="hidden" name="id" value="@Model.SelectedEvent.Id" />
+                            <button type="button" class="btn btn-danger"
+                                    onclick="document.getElementById('delete-modal').classList.add('active')">
+                                Verwijderen
+                            </button>
+                        </form>
+                    </div>
+                }
             </aside>
+        </div>
+    </div>
+</div>
+
+<div id="delete-modal" class="confirm-modal-overlay">
+    <div class="confirm-modal">
+        <div class="confirm-modal-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+        </div>
+        <h3 class="confirm-modal-title">Evenement verwijderen</h3>
+        <p class="confirm-modal-text">Weet je zeker dat je <strong>@Model.SelectedEvent?.Name</strong> wilt verwijderen? Dit kan niet ongedaan worden gemaakt.</p>
+        <div class="confirm-modal-actions">
+            <button type="button" class="btn btn-nera-secondary" style="width: auto; padding: 12px 28px;"
+                    onclick="document.getElementById('delete-modal').classList.remove('active')">
+                Annuleren
+            </button>
+            <button type="submit" form="delete-event-form" class="btn btn-danger" style="width: auto; padding: 12px 28px;">
+                Verwijderen
+            </button>
         </div>
     </div>
 </div>

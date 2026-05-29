@@ -15,12 +15,17 @@ namespace NEXT.Tests.Fakes
             CreatedEvent = ev;
             CreatedByUserId = userId;
         }
-
+        
         public Event GetEventById(int id)
         {
             throw new NotImplementedException();
         }
         public List<Event> GetEventsByUser(int userId)
+        {
+            throw new NotImplementedException();
+        }
+        
+        public void DeleteEvent(int eventId)
         {
             throw new NotImplementedException();
         }

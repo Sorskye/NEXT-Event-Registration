@@ -10,9 +10,12 @@
         <p class="dashboard-greeting">Welkom terug,</p>
         <h1 class="dashboard-name">@Model.UserName</h1>
     </div>
-    <a asp-page="/Events/CreateEvent" class="btn btn-nera-primary dashboard-new-btn">
-        + Nieuw evenement
-    </a>
+    @if (Model.UserMadeEvents != null && Model.UserMadeEvents.Any())
+    {
+        <a asp-page="/Events/CreateEvent" class="btn btn-nera-primary dashboard-new-btn">
+            + Nieuw evenement
+        </a>
+    }
 </div>
 
 <div class="homepage-wrapper">
@@ -74,7 +77,18 @@
         }
         else
         {
-            <p>Je hebt nog geen evenementen aangemaakt.</p>
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none" viewBox="0 0 24 24" stroke="#9ca3af" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                    </svg>
+                </div>
+                <h3 class="empty-state-title">Geen aankomende evenementen</h3>
+                <p class="empty-state-text">Je hebt nog geen evenementen aangemaakt. Maak je eerste evenement aan om te beginnen.</p>
+                <a asp-page="/Events/CreateEvent" class="btn btn-nera-primary" style="width: auto; padding: 12px 28px;">
+                    + Nieuw evenement aanmaken
+                </a>
+            </div>
         }
 
         <section class="section-block">

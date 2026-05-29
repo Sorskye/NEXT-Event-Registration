@@ -45,6 +45,7 @@ namespace NERA.Models
         }
 
         public bool IsRegistered { get; set; }
+        public int? OrganizerUserId { get; set; }
     }
 
 }

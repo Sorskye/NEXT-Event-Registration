@@ -1,78 +1,116 @@
-﻿@page "{id:int}"
+@page "{id:int}"
 @model NEXT.Pages.Events.EventQrModel
 
 @{
     ViewData["Title"] = "QR-code voor evenement";
 }
 
-<div class="container py-4">
-    @if (Model.EventItem != null)
-    {
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card shadow-sm border-0 rounded-4">
-                    <div class="card-body p-4 text-center">
+@if (Model.EventItem != null)
+{
+    <div class="details-page">
+        <div class="details-container">
 
-                        <h1 class="mb-3">QR-code voor evenement</h1>
-                        <h3 class="mb-4">@Model.EventItem.Title</h3>
+            <a asp-page="/Dashboards/AdminDashboard" class="back-link">← Terug naar dashboard</a>
 
-                        <div class="mb-3">
-                            <p class="mb-1">
-                                <strong>Locatie:</strong> @Model.EventItem.Location
+            <div class="details-grid">
+
+                <section class="details-main-card">
+                    <img src="@Model.EventItem.ImageUrl"
+                         alt="@Model.EventItem.Title"
+                         class="details-image" />
+
+                    <div class="details-main-body">
+                        <div class="event-badge">NERA Event</div>
+                        <h1 class="event-title">@Model.EventItem.Title</h1>
+                        <p class="event-description">@Model.EventItem.Description</p>
+
+                        <div class="event-highlight-box">
+                            <h2 class="event-highlight-title">QR-code voor inchecken</h2>
+                            <p class="event-highlight-text">
+                                Laat bezoekers deze QR-code scannen bij de ingang om hun aanwezigheid te bevestigen.
                             </p>
-                            <p class="mb-0">
-                                <strong>Datum:</strong>
+
+                            <div style="text-align:center; margin-top: 20px;">
+                                <img src="/api/qrcode/event/@Model.EventItem.Id"
+                                     alt="QR-code voor @Model.EventItem.Title"
+                                     style="max-width: 260px; width: 100%; border-radius: 12px; padding: 12px; background: white; border: 1px solid #eef0f4;" />
+                            </div>
+
+                            <div style="display:flex; gap:10px; margin-top:20px; flex-wrap:wrap;">
+                                <button type="button"
+                                        class="btn btn-nera-secondary"
+                                        style="flex:1;"
+                                        onclick="window.print()">
+                                    Print
+                                </button>
+                                <a href="/api/qrcode/event/@Model.EventItem.Id"
+                                   download="qr-@(Model.EventItem.Id).png"
+                                   class="btn btn-nera-primary" style="width:auto; flex:1;">
+                                    Download QR-code
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <aside class="details-side-card">
+                    <h2 class="side-title">Evenement informatie</h2>
+
+                    <div class="info-list">
+                        <div class="info-item">
+                            <div class="info-label">Locatie</div>
+                            <div class="info-value">@Model.EventItem.LocationName</div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label">Begindatum</div>
+                            <div class="info-value">
                                 @Model.EventItem.Beginning_date?.ToString("dd-MM-yyyy")
                                 @Model.EventItem.Beginning_time?.ToString("HH:mm")
-                            </p>
+                            </div>
                         </div>
 
-                        <div class="my-4">
-                            <img src="/api/qrcode/event/@Model.EventItem.Id"
-                                 alt="QR-code voor @Model.EventItem.Title"
-                                 class="img-fluid border rounded-3 p-3 bg-white"
-                                 style="max-width: 350px;" />
+                        <div class="info-item">
+                            <div class="info-label">Einddatum</div>
+                            <div class="info-value">
+                                @Model.EventItem.Ending_date?.ToString("dd-MM-yyyy")
+                                @Model.EventItem.Ending_time?.ToString("HH:mm")
+                            </div>
                         </div>
 
-                        <p class="text-muted mb-4">
-                            Laat bezoekers deze QR-code scannen om in te checken.
-                        </p>
-
-                        <a href="/api/qrcode/event/@Model.EventItem.Id"
-                           download="event-qr-@(Model.EventItem.Id).png"
-                           class="btn btn-primary">
-                            Download QR-code
-                        </a>
-
-                            <button type="button"
-                                    class="btn btn-outline-secondary"
-                                    onclick="window.print()">
-                                Print
-                            </button>
-
-                            <a asp-page="/Dashboards/AdminDashboard"
-                               class="btn btn-secondary">
-                                Terug naar dashboard
-                            </a>
+                        <div class="info-item">
+                            <div class="info-label">Organizer</div>
+                            <div class="info-value">@Model.EventItem.Organizer</div>
                         </div>
-                        <div class="mb-4">
-    <p class="fw-semibold mb-2">Directe link:</p>
-    <a href="@Model.QrTargetUrl" target="_blank" rel="noopener noreferrer">
-        @Model.QrTargetUrl
-    </a>
-</div>
+
+                        <div class="info-item">
+                            <div class="info-label">Deelnemers</div>
+                            <div class="info-value">@Model.EventItem.CurrentParticipants / @Model.EventItem.MaxParticipants</div>
+                        </div>
                     </div>
-                </div>
-            </div>
-    }
-    else
-    {
-        <div class="alert alert-warning">
-            Evenement niet gevonden.
-        </div>
 
-        <a asp-page="/Dashboards/AdminDashboard" class="btn btn-secondary">
-            Terug naar dashboard
-        </a>
-    }
-</div>
+                    <div class="action-box" style="margin-top: 20px;">
+                        <div class="action-title">Directe link</div>
+                        <p class="action-text" style="word-break: break-all;">
+                            <a href="@Model.QrTargetUrl" target="_blank" rel="noopener noreferrer">
+                                @Model.QrTargetUrl
+                            </a>
+                        </p>
+                    </div>
+                </aside>
+
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="details-page">
+        <div class="details-container">
+            <p>Evenement niet gevonden.</p>
+            <a asp-page="/Dashboards/AdminDashboard" class="btn btn-nera-secondary" style="width:auto;">
+                Terug naar dashboard
+            </a>
+        </div>
+    </div>
+}

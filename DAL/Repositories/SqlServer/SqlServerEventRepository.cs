@@ -58,6 +58,39 @@ namespace DAL.Repositories.SqlServer
             return events;
         }
 
+        public void DeleteEvent(int eventId)
+        {
+            using SqlConnection conn = new SqlConnection(connectionString);
+            conn.Open();
+
+            using SqlTransaction transaction = conn.BeginTransaction();
+
+            try
+            {
+                using SqlCommand deleteRegistrations = new SqlCommand(
+                    "DELETE FROM Registration_Event WHERE EventID = @EventId", conn, transaction);
+                deleteRegistrations.Parameters.AddWithValue("@EventId", eventId);
+                deleteRegistrations.ExecuteNonQuery();
+
+                using SqlCommand deleteUserEvents = new SqlCommand(
+                    "DELETE FROM User_Event WHERE EventID = @EventId", conn, transaction);
+                deleteUserEvents.Parameters.AddWithValue("@EventId", eventId);
+                deleteUserEvents.ExecuteNonQuery();
+
+                using SqlCommand deleteEvent = new SqlCommand(
+                    "DELETE FROM Event WHERE ID = @EventId", conn, transaction);
+                deleteEvent.Parameters.AddWithValue("@EventId", eventId);
+                deleteEvent.ExecuteNonQuery();
+
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
+        }
+
         public void CreateEvent(Event ev, int creatorUserId)
         {
             using SqlConnection conn = new SqlConnection(connectionString);

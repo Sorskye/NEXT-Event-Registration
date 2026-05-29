@@ -52,7 +52,7 @@ var app = builder.Build();
 app.MapGet("/api/qrcode/event/{eventId:int}", (HttpContext http, int eventId, QrCoderService qrCoderService) =>
 {
     var baseUrl = $"{http.Request.Scheme}://{http.Request.Host}";
-    var targetUrl = $"{baseUrl}/Login/LoginRedirect?eventId={eventId}";
+    var targetUrl = $"{baseUrl}/Auth/LoginRedirect?eventId={eventId}";
 
     var bytes = qrCoderService.GeneratePng(targetUrl);
 

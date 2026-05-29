@@ -11,6 +11,7 @@ namespace NEXT.Pages.Events
         private readonly IEventRegistrationRepository _eventRegistrationRepository;
         public Event? SelectedEvent { get; set; }
         public bool IsRegistered { get; set; }
+        public bool IsCreator { get; set; }
 
         public EventDetailsModel(
             IEventRepository eventRepository,
@@ -32,8 +33,26 @@ namespace NEXT.Pages.Events
             SelectedEvent = _eventRepository.GetEventById(id);
 
             IsRegistered = _eventRegistrationRepository.IsUserRegistered(currentUserId.Value, id);
+            IsCreator = SelectedEvent?.OrganizerUserId == currentUserId.Value;
 
             return Page();
+        }
+
+        public IActionResult OnPostDelete(int id)
+        {
+            int? currentUserId = HttpContext.Session.GetInt32("UserId");
+
+            if (!currentUserId.HasValue)
+                return RedirectToPage("/Auth/Login");
+
+            Event? ev = _eventRepository.GetEventById(id);
+
+            if (ev == null || ev.OrganizerUserId != currentUserId.Value)
+                return Forbid();
+
+            _eventRepository.DeleteEvent(id);
+
+            return RedirectToPage("/Home/Homepage");
         }
     }
 }

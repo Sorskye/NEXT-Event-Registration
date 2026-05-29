@@ -73,6 +73,29 @@ namespace NEXT.Pages.Events
                 return RedirectToPage("/Home/Homepage");
             }
 
+            // Valideer dat begindatum niet in het verleden ligt
+            if (Beginning_date.HasValue)
+            {
+                var beginDateTime = Beginning_date.Value.ToDateTime(Beginning_time ?? TimeOnly.MinValue);
+                if (beginDateTime < DateTime.Now)
+                {
+                    ErrorMessage = "De begindatum en -tijd mogen niet in het verleden liggen.";
+                    return Page();
+                }
+            }
+
+            // Valideer dat einddatum niet voor begindatum ligt
+            if (Beginning_date.HasValue && Ending_date.HasValue)
+            {
+                var beginDateTime = Beginning_date.Value.ToDateTime(Beginning_time ?? TimeOnly.MinValue);
+                var endDateTime = Ending_date.Value.ToDateTime(Ending_time ?? TimeOnly.MinValue);
+                if (endDateTime < beginDateTime)
+                {
+                    ErrorMessage = "De einddatum en -tijd mogen niet voor de begindatum liggen.";
+                    return Page();
+                }
+            }
+
             byte[]? photoBytes = null;
             if (ImageFile != null && ImageFile.Length > 0)
             {

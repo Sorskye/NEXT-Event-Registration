@@ -37,20 +37,20 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label asp-for="Beginning_date" class="form-label">Begin Datum</label>
-                        <input asp-for="Beginning_date" type="date" class="form-input" />
+                        <input asp-for="Beginning_date" id="beginDateInput" type="date" class="form-input" />
                         <span asp-validation-for="Beginning_date" class="text-danger"></span>
                     </div>
-                    
+
                     <div class="form-group">
                         <label asp-for="Ending_date" class="form-label">Eind datum</label>
-                        <input asp-for="Ending_date" type="date" class="form-input" />
-                        <span asp-validation-for="Ending_date" class="text-danger"></span>
+                        <input asp-for="Ending_date" id="endDateInput" type="date" class="form-input" />
+                        <span asp-validation-for="Ending_date" class="text-danger" id="endDateError"></span>
                     </div>
-                    
+
                     <div class="form-group">
                         <label asp-for="Beginning_time" class="form-label">Begin tijd</label>
-                        <input asp-for="Beginning_time" type="time" class="form-input" />
-                        <span asp-validation-for="Beginning_time" class="text-danger"></span>
+                        <input asp-for="Beginning_time" id="beginTimeInput" type="time" class="form-input" />
+                        <span asp-validation-for="Beginning_time" class="text-danger" id="beginTimeError"></span>
                     </div>
 
                     <div class="form-group">
@@ -126,6 +126,78 @@
 
 @section Scripts {
     <script>
+        // Begindatum en -tijd mogen niet in het verleden liggen
+        const beginDateInput = document.getElementById('beginDateInput');
+        const beginTimeInput = document.getElementById('beginTimeInput');
+        const beginTimeError = document.getElementById('beginTimeError');
+
+        const now = new Date();
+        const todayStr = now.toISOString().split('T')[0];
+        const currentTimeStr = now.toTimeString().slice(0, 5); // "HH:mm"
+
+        // Zet minimum datum op vandaag
+        beginDateInput.min = todayStr;
+
+        function updateTimeMin() {
+            const selectedDate = beginDateInput.value;
+            if (selectedDate === todayStr) {
+                beginTimeInput.min = currentTimeStr;
+                // Controleer of huidige waarde in het verleden is
+                if (beginTimeInput.value && beginTimeInput.value < currentTimeStr) {
+                    beginTimeInput.value = '';
+                    beginTimeError.textContent = 'Begin tijd mag niet in het verleden liggen.';
+                } else {
+                    beginTimeError.textContent = '';
+                }
+            } else {
+                beginTimeInput.min = '';
+                beginTimeError.textContent = '';
+            }
+        }
+
+        beginDateInput.addEventListener('change', updateTimeMin);
+
+        beginTimeInput.addEventListener('change', function () {
+            if (beginDateInput.value === todayStr && this.value < currentTimeStr) {
+                beginTimeError.textContent = 'Begin tijd mag niet in het verleden liggen.';
+                this.value = '';
+            } else {
+                beginTimeError.textContent = '';
+            }
+        });
+
+        updateTimeMin();
+
+        // Einddatum mag niet voor begindatum liggen
+        const endDateInput = document.getElementById('endDateInput');
+        const endDateError = document.getElementById('endDateError');
+
+        function updateEndDateMin() {
+            const beginVal = beginDateInput.value;
+            if (beginVal) {
+                endDateInput.min = beginVal;
+                if (endDateInput.value && endDateInput.value < beginVal) {
+                    endDateInput.value = '';
+                    endDateError.textContent = 'Einddatum mag niet voor de begindatum liggen.';
+                } else {
+                    endDateError.textContent = '';
+                }
+            }
+        }
+
+        beginDateInput.addEventListener('change', updateEndDateMin);
+
+        endDateInput.addEventListener('change', function () {
+            if (beginDateInput.value && this.value < beginDateInput.value) {
+                endDateError.textContent = 'Einddatum mag niet voor de begindatum liggen.';
+                this.value = '';
+            } else {
+                endDateError.textContent = '';
+            }
+        });
+
+        updateEndDateMin();
+
         // Locatie autocomplete via OpenStreetMap
         const locationInput = document.getElementById('locationInput');
         const suggestionsList = document.getElementById('locationSuggestions');

@@ -23,11 +23,12 @@ namespace DAL.Repositories.SqlServer
                 l.Name AS LocationName,
                 organizer.Name AS OrganizerName,
                 organizer.Email AS OrganizerEmail,
+                organizer.ID AS OrganizerUserId,
                 (SELECT COUNT(*) FROM Registration_Event re_count WHERE re_count.EventID = e.ID) AS CurrentParticipants
             FROM Event e
             LEFT JOIN Location l ON e.LocationID = l.ID
             OUTER APPLY (
-                SELECT TOP 1 u.Name, u.Email
+                SELECT TOP 1 u.ID, u.Name, u.Email
                 FROM User_Event ue
                 INNER JOIN Users u ON ue.UserID = u.ID
                 WHERE ue.EventID = e.ID
@@ -55,6 +56,7 @@ namespace DAL.Repositories.SqlServer
                 LocationName = reader["LocationName"] == DBNull.Value ? null : reader["LocationName"].ToString(),
                 CurrentParticipants = Convert.ToInt32(reader["CurrentParticipants"]),
                 Organizer = GetOrganizerDisplayName(reader),
+                OrganizerUserId = reader["OrganizerUserId"] == DBNull.Value ? null : Convert.ToInt32(reader["OrganizerUserId"]),
                 ImageUrl = photo == null ? "/images/placeholder-image.png" : $"data:image/jpeg;base64,{Convert.ToBase64String(photo)}"
             };
         }

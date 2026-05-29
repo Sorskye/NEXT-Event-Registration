@@ -3,8 +3,6 @@ using DAL.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using NERA.Models;
-using System.Security.Claims;
-using DAL.Models;
 
 namespace NEXT.Pages.Home
 {
@@ -40,7 +38,7 @@ namespace NEXT.Pages.Home
             int? userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null)
             {
-                return RedirectToPage("/LoginRedirect", new { eventId = eventId.Value });
+                return RedirectToPage("/Auth/LoginRedirect", new { eventId = eventId.Value });
             }
 
             EventItem = _eventRepository.GetEventById(eventId.Value);
