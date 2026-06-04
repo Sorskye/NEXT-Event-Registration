@@ -49,7 +49,7 @@
                                         <p><strong>Datum:</strong> @ev.Beginning_date?.ToString("dd-MM-yyyy") @ev.Beginning_time?.ToString("HH:mm")</p>
                                         <p><strong>Organizer:</strong> @ev.Organizer</p>
                                     </div>
-
+                                </div>
                                     <div class="event-actions">
                                         <div class="event-rapport">
                                             <a asp-page="/Dashboards/Rapport"
@@ -58,7 +58,7 @@
                                                 Bekijk rapport
                                             </a>
                                         </div>
-
+    
                                         <div class="event-qr">
                                             <a asp-page="/Events/EventQr"
                                                asp-route-id="@ev.Id"
@@ -67,8 +67,6 @@
                                             </a>
                                         </div>
                                     </div>
-
-                                </div>
                             </div>
                         </div>
                     }
@@ -123,6 +121,7 @@
                                         <p><strong>Organizer:</strong> @ev.Organizer</p>
                                     </div>
 
+                                </div>
                                     <div class="event-actions">
                                         <div class="event-rapport">
                                             <a asp-page="/Dashboards/Rapport"
@@ -140,8 +139,6 @@
                                             </a>
                                         </div>
                                     </div>
-
-                                </div>
                             </div>
                         </div>
                     }

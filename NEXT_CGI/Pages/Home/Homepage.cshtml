@@ -27,13 +27,12 @@
                                         <p><strong>Datum:</strong> @ev.Beginning_date?.ToString("dd-MM-yyyy") @ev.Beginning_time?.ToString("HH:mm")</p>
                                         <p><strong>Organizer:</strong> @ev.Organizer</p>
                                     </div>
-
-                                    <div class="event-actions">
-                                        <form method="post" asp-page-handler="Unregister">
-                                            <input type="hidden" name="id" value="@ev.Id"/>
-                                            <button type="submit" class="btn btn-nera-secondary">Afmelden</button>
-                                        </form>
-                                    </div>
+                                </div>
+                                <div class="event-actions">
+                                    <form method="post" asp-page-handler="Unregister">
+                                        <input type="hidden" name="id" value="@ev.Id"/>
+                                        <button type="submit" class="btn btn-nera-secondary">Afmelden</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -58,7 +57,7 @@
                             <div class="card event-card position-relative">
                                 <img src="@ev.ImageUrl" class="event-image" alt="@ev.Title"/>
 
-                                                <div class="event-card-body">
+                                <div class="event-card-body">
                                     <div class="card-title-row">
                                         <h5 class="card-title">@ev.Title</h5>
                                         @if (string.Equals(ev.Organizer, Model.CurrentUserName, StringComparison.OrdinalIgnoreCase))
@@ -74,6 +73,8 @@
                                         <p><strong>Organizer:</strong> @ev.Organizer</p>
                                     </div>
 
+                                   
+                                </div>
                                     <div class="event-actions">
                                         @{
                                             var isExpired = ev.Beginning_date.HasValue && ev.Beginning_time.HasValue &&
@@ -91,7 +92,6 @@
                                             </form>
                                         }
                                     </div>
-                                </div>
                             </div>
                         </div>
                     }

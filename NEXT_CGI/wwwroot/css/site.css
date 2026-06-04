@@ -218,7 +218,8 @@ body {
     display: flex;
     justify-content: flex-end;
     gap: 8px;
-    margin-top: 10px;
+    margin: 22px;
+    margin-top: auto;
     position: relative;
     z-index: 2;
 }
